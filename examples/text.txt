@@ -1,0 +1,72 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Overview of Generative AI on Vertex AI
+bookmark_border
+On this page
+Generative AI workflow
+Generative AI models
+PaLM API offerings
+Other Generative AI offerings
+Model tuning and deployment
+Stream responses from Generative AI models
+Supported interfaces
+Certifications and security controls
+Generative AI on Vertex AI (also known as genai) gives you access to Google's large generative AI models so you can test, tune, and deploy them for use in your AI-powered applications. This page gives you an overview of the generative AI workflow on Vertex AI, the features and models available, and directs you to resources for getting started.
+Generative AI workflow
+The following diagram shows a high level overview of the generative AI workflow.
+Prompt
+The generative AI workflow typically starts with prompting. A prompt is a natural language request sent to a language model to elicit a response back. Writing a prompt to get the desired response from the model is a practice called prompt design. While prompt design is a process of trial and error, there are prompt design principles and strategies that you can use to nudge the model to behave in the desired way.
+Foundation models
+Prompts are sent to a model for response generation. Vertex AI has a variety of generative AI foundation models that you can select from, including the following:
+PaLM 2 for Text (text-bison)
+PaLM 2 for Chat (chat-bison)
+Codey for Code Generation (code-bison)
+Codey for Code Chat (codechat-bison)
+Codey for Code Completion (code-gecko)
+Embeddings for Text (textembedding-gecko)
+Embeddings for Multimodal (multimodalembedding)
+Imagen for Image Generation (imagegeneration)
+The models differ in size, modality, and cost. You can explore Google's proprietary models and OSS models in Model Garden.
+Model customization
+You can customize the default behavior of Google's foundation models so that they consistently generate the desired results without using complex prompts. This customization process is called model tuning. Model tuning helps you reduce the cost and latency of your requests by allowing you to simplify your prompts.
+Vertex AI also offers model evaluation tools to help you evaluate the performance of your tuned model. After your tuned model is production-ready, you can deploy it to an endpoint and monitor performance like in standard MLOps workflows.
+Enterprise Grounding Service
+If you need model responses to be grounded on a source of truth, such as your own data corpus, you can use Enterprise Grounding Service. Grounding helps reduce model hallucinations, especially on unknown topics, and also gives the model access to new information. (Private preview)
+Citation check
+After the response is generated, Vertex AI checks whether citations need to be included with the response. If a significant amount of the text in the response comes from a particular source, that source is added to the citation metadata in the response.
+Responsible AI and safety
+The last layer of checks that the prompt and response go through before being returned is the safety filters. Vertex AI checks both the prompt and response for how much the prompt or response belongs to a safety category. If the threshold is exceed for one or more categories, the response is blocked and Vertex AI returns a fallback response.
+Response
+If the prompt and response passes the safety filter checks, the response is returned. Typically, the response is returned all at once. However, you can also receive responses progressively as it generates by enabling streaming.
+Generative AI models
+The generative AI models available in Vertex AI, also called foundation models, are categorized by the type of content that it's designed to generate. This content includes text and chat, image, code, video, and embeddings. Each model is exposed through a publisher endpoint that's specific to your Google Cloud project so there's no need to deploy the foundation model unless you need to tune them for a specific use case.
+PaLM 2 is the underlying model that is driving the PaLM API. PaLM 2 is a state-of-the-art language model with improved multilingual, reasoning, and coding capabilities. To learn more about PaLM 2, see Introducing PaLM 2.
+PaLM API offerings
+The Vertex AI PaLM API contains the publisher endpoints for Google's Pathways Language Model 2 (PaLM 2), which are large language models (LLMs) that generate text and code in response to natural language prompts.
+PaLM API for text is fine-tuned for language tasks such as classification, summarization, and entity extraction.
+PaLM API for chat is fine-tuned for multi-turn chat, where the model keeps track of previous messages in the chat and uses it as context for generating new responses.
+Other Generative AI offerings
+The Codey APIs generate code. The Codey APIs include three models that generate code, suggest code for code completion, and let developers chat to get help with code-related questions. For more information, see Code models overview.
+The Text Embedding API generates vector embeddings for input text. You can use embeddings for tasks like semantic search, recommendation, classification, and outlier detection.
+Multimodal embeddings generates embedding vectors based on image and text inputs. These embeddings can later be used for other subsequent tasks like image classification or content recommendations. For more information, see the multimodal embeddings page.
+Imagen, our text-to-image foundation model, lets organizations generate and customize studio-grade images at scale for any business need. For more information, see the Imagen on Vertex AI overview.
+Model tuning and deployment
+The foundation models on Vertex AI are developed to handle general use cases. You can customize foundation models for specific use cases by tuning them using a dataset of input-output examples. The tuned model is automatically deployed to a Vertex AI endpoint of the same name in your Google Cloud project.
+Stream responses from Generative AI models
+With streaming, you can receive responses from Generative AI models in real time. Rather than packaging all of the output tokens into a single response, you receive output tokens as soon as the model generates them. You can make streaming requests using the REST API, the Vertex AI SDK for Python, or an available client library. For more information, see Stream responses from Generative AI models.
+Supported interfaces
+You can interact with the generative AI features on Vertex AI by using Generative AI Studio in the Google Cloud console, the Vertex AI API, and the Vertex AI SDK for Python.
+Certifications and security controls
+Vertex AI supports CMEK, VPC Service Controls, Data Residency, and Access Transparency. There are some limitations for Generative AI features. For more information, see Security controls.
+Get started
+Try a quickstart tutorial using Generative AI Studio or the Vertex AI API.
+Explore pretrained models in Model Garden.
+Learn how to tune a foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Learn about quotas and limits.
+Learn about pricing.
+Was this helpful?
+Send feedback

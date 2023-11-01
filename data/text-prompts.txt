@@ -1,0 +1,347 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Design text prompts
+bookmark_border
+On this page
+Supported models
+Prompt structure
+Common task types
+Classification prompts
+Classification use cases
+Best practices for classification prompts
+Example classification prompts
+Summarization prompts
+The Vertex AI PaLM API for text lets you design prompts with flexibility in terms of their structure and format. This page gives you an overview of and general guidance for designing text prompts for the PaLM API for text.
+To follow step-by-step guidance for this task directly in the Google Cloud console, click Guide me:
+Guide me
+Supported models
+text-bison
+text-bison-32k
+Prompt structure
+The Vertex AI PaLM API for text lets you structure your prompts however you like. You can add contextual information, instructions, examples, questions, lists, and any other types of text content that you can think of.
+You can label text content by adding prefixes to the text. A prefix can be a word or a phrase that ends with a colon (:). Examples of prefixes include:
+Text:
+Question:
+Answer:
+Categories:
+Options:
+You can use whatever prefixes you want, but you might find that some prefixes work better than others for a given task. You should also ensure that you refer to prefixes consistently within the prompt.
+⛔ Inconsistent reference: The instruction uses the terms sentiment and tweet, but the prefixes are Text: and Answer:.
+Prompt:
+Classify the sentiment of the following tweet as positive or negative.
+Text: I love chocolate.
+Answer:
+  
+✅ Consistent reference: The prefixes Text: and Sentiment: match the terms used in the instruction.
+Prompt:
+Classify the sentiment of the following text as positive or negative.
+Text: I love chocolate.
+Sentiment:
+  
+Common task types
+You can create text prompts for handling any number of tasks. Some of the most common tasks are classification, summarization, and extraction. You can learn more about designing text prompts for these common tasks in the following pages:
+Classification prompts
+Summarization prompts
+Extraction prompts
+Classification prompts
+The Vertex AI PaLM API can perform classification tasks that assign a class or category to text. You can specify a list of categories to choose from or let the model choose from its own categories. This page shows you how to create prompts that classify text.
+Classification use cases
+The following are common use cases for text classification:
+Fraud detection: Classify whether transactions in financial data are fraudulent or not.
+Spam filtering: Identify whether an email is spam or not.
+Sentiment analysis: Classify the sentiment conveyed in text as positive or negative. For example, you can classify movie reviews or email as positive or negative.
+Content moderation: Identify and flag content that might be harmful, such as offensive language or phishing.
+Best practices for classification prompts
+Try setting the temperature to zero and top-K to one. Classification tasks are typically deterministic, so these settings often produce the best results.
+Example classification prompts
+Use the following examples to learn how to design classification prompts for various use cases.
+Sentiment analysis prompt
+Content classification prompt
+Movie classification prompt
+Sentiment analysis prompt
+Sentiment analysis evaluates text and classifies it as positive or negative. Including sentiment analysis in a prompt is useful when analyzing content such as reviews, feedback, and emails.
+The following prompt classifies the sentiment of a review:
+Prompt:
+What is the sentiment of this review?
+Review: This is a shoe I will wear with black dress pants or jeans when I need comfort and a little style, but I am not impressed.  This is a very flimsy shoe with little support at all. Unlike any other shoes I've purchased in the past. It looks nice, but it's not comfortable.
+  
+Response:
+The review is negative.
+
+The reviewer said 'I am not impressed'. They also said 'This is a very flimsy shoe with little support at all' and 'It looks nice, but it's not comfortable'. These are all negative comments.
+  
+(text-bison@001@April 27, 2023)
+To make the model respond with only positive or negative, try adding those terms in the instruction.
+Prompt:
+Classify the sentiment of this review as Positive or Negative?
+Review: This is a shoe I will wear with black dress pants or jeans when I need comfort and a little style, but I am not impressed.  This is a very flimsy shoe with little support at all. Unlike any other shoes I've purchased in the past. It looks nice, but it's not comfortable.
+Sentiment:
+  
+Response:
+Negative
+  
+(text-bison@001@April 27, 2023)
+You can also get the model to produce a more structured response that includes the sentiment and an explanation of the reason why it selected that sentiment.
+Prompt:
+For the given review, return a JSON object that has the fields sentiment and explanation. Acceptable values for sentiment are Positive or Negative. The explanation field contains text that explains the sentiment.
+Review: This is a shoe I will wear with black dress pants or jeans when I need comfort and a little style, but I am not impressed.  This is a very flimsy shoe with little support at all. Unlike any other shoes I've purchased in the past. It looks nice, but it's not comfortable.
+  
+Response:
+{ "sentiment": "Negative", "explanation": "This is a very flimsy shoe with little support at all. Unlike any other shoes I've purchased in the past. It looks nice, but it's not comfortable." }
+  
+(text-bison@001@April 27, 2023)
+Content classification prompt
+The following prompt classifies customer emails based on what's requested in its content.
+Prompt:
+Classify the text as one of the following categories:
+- increase credit limit
+- cancel credit card
+- charge dispute
+
+Text: I lost my wallet yesterday so I need to cancel my credit card and get a new one. My card number is 1234.
+Category:
+  
+Response:
+cancel credit card
+  
+(text-bison@001@April 27, 2023)
+If the request in the email isn't clear, you might need to send it to customer service to get more information. To do this, add a "customer service" category and instruct the model to apply this category to outliers that require more information.
+Prompt:
+Classify the text as one of the following categories:
+- increase credit limit
+- cancel credit card
+- charge dispute
+If the text doesn't fit any categories, classify it as the following:
+- customer service
+
+Text: I want to remodel my bathroom. What are my options?
+Category:
+  
+Response:
+The text is about remodeling a bathroom. This is not a topic that is covered by the categories listed. Therefore, the text should be classified as "customer service".
+  
+(text-bison@001@April 27, 2023)
+Another option to handle emails that require more information is to include examples of what to do with outliers that don't fit in any other categories.
+Prompt:
+Classify the text as one of the following categories:
+- increase credit limit
+- cancel credit card
+- charge dispute
+- customer service
+
+Text: I need to buy a car.
+Category: customer service, because it does not fit any of the categories.
+Text: But I was in Chicago.
+Category: customer service, because it does not fit any of the categories.
+Text: Where are my papers?
+Category: customer service, because it does not fit any of the categories.
+
+Text: I want to remodel my bathroom. What are my options?
+Category:
+  
+Response:
+customer service
+  
+(text-bison@001@April 27, 2023)
+Movie classification prompt
+The following prompt classifies movies by who you should watch it with.
+Prompt:
+Classify the following movie as one of the following categories:
+- watch alone
+- watch with friends
+- watch with family
+- watch on a date
+
+Text: The Goonies
+Category:
+  
+Response:
+watch with family
+  
+(text-bison@001@April 27, 2023)
+You might need to define your own category. For example, suppose you own a pet hotel named the Remi Inn that shows movies for pets. The movie selection criteria could be:
+The main character must be an animal.
+The movie must be happy.
+The movie can't be a cartoon.
+The following prompt classifies movies that match the three criteria as Remi-tastic and all others as Bark-fest.
+Prompt:
+Remi-tastic movies must meet the following criteria:
+- The main character must be an animal.
+- The movie must be family friendly.
+- The movie cannot be a cartoon.
+If a movie is not Remi-tastic, then it is Bark-fest.
+
+Classify the movie as one of the following categories:
+- Remi-tastic
+- Bark-fest
+
+Text: The Adventures of Milo and Otis
+Category:
+  
+Response:
+Remi-tastic
+  
+(text-bison@001@April 27, 2023)
+To check if the model uses the criteria or randomly chooses a classification, the following prompt includes instructions to return a reason for its classification.
+Prompt:
+Remi-tastic movies must meet the following criteria:
+- The main character must be an animal.
+- The movie must be family friendly.
+- The movie cannot be a cartoon.
+If a movie is not Remi-tastic, then it is Bark-fest.
+
+Classify the movie as one of the following categories:
+- Remi-tastic
+- Bark-fest
+Explain why.
+
+Text: The Adventures of Milo and Otis
+Category:
+  
+Response:
+Remi-tastic The Adventures of Milo and Otis is a Remi-tastic movie because it meets all of the criteria for a Remi-tastic movie. The main character is an animal, the movie is family friendly, and the movie is not a cartoon. The Adventures of Milo and Otis is a great movie for families to watch together because it is funny, heartwarming, and educational.
+  
+(text-bison@001@April 27, 2023)
+Summarization prompts
+Vertex AI PaLM API can extract a summary of the most important information from text. You can provide information in the prompt to help the model create a summary, or ask the model to create a summary on its own. This page shows you how to design prompts to create different kinds of summarizaries.
+Summarization use cases
+The following are common use cases for summarization:
+Summarize text: Summarize text content such as the following:
+News articles.
+Research papers.
+Legal documents.
+Financial documents.
+Technical documents.
+Customer feedback.
+Content generation: Generate content for an article, blog, or product description.
+Best practices
+Use the following guidelines to create optimal text summaries:
+Specify any characteristics that you want the summary to have.
+For more creative summaries, specify higher temperature, top-K, and top-P values. For more information, learn about the temperature, topK, and topP parameters in Text parameter definitions.
+When you write your prompt, focus on the purpose of the summary and what you want to get out of it.
+Example summarization prompts
+Use the following examples to learn how to design summarization prompts for various use cases.
+Article summarization prompt
+Chat summarization prompt
+Hashtag tokenization summary prompt
+Article summarization prompt
+The following prompt summarizes the main points of an article:
+Prompt:
+Provide a summary for the following article:
+The efficient-market hypothesis (EMH) is a hypothesis in financial economics that states that asset prices reflect all available information. A direct implication is that it is impossible to 'beat the market' consistently on a risk-adjusted basis since market prices should only react to new information. Because the EMH is formulated in terms of risk adjustment, it only makes testable predictions when coupled with a particular model of risk. As a result, research in financial economics since at least the 1990s has focused on market anomalies, that is, deviations from specific models of risk. The idea that financial market returns are difficult to predict goes back to Bachelier, Mandelbrot, and Samuelson, but is closely associated with Eugene Fama, in part due to his influential 1970 review of the theoretical and empirical research. The EMH provides the basic logic for modern risk-based theories of asset prices, and frameworks such as consumption-based asset pricing and intermediary asset pricing can be thought of as the combination of a model of risk with the EMH. Many decades of empirical research on return predictability has found mixed evidence. Research in the 1950s and 1960s often found a lack of predictability (e.g. Ball and Brown 1968; Fama, Fisher, Jensen, and Roll 1969), yet the 1980s-2000s saw an explosion of discovered return predictors (e.g. Rosenberg, Reid, and Lanstein 1985; Campbell and Shiller 1988; Jegadeesh and Titman 1993). Since the 2010s, studies have often found that return predictability has become more elusive, as predictability fails to work out-of-sample (Goyal and Welch 2008), or has been weakened by advances in trading technology and investor learning (Chordia, Subrahmanyam, and Tong 2014; McLean and Pontiff 2016; Martineau 2021).
+  
+Response:
+The efficient-market hypothesis (EMH) states that asset prices reflect all available information. This hypothesis has been tested by many studies, with mixed results. Some studies have found that return predictability is possible, while others have found that it is not. The EMH provides the basic logic for modern risk-based theories of asset prices.
+  
+(text-bison@001@April 27, 2023)
+You might want an abstract of an article that you wrote. The following prompt creates an abstract of an article:
+Prompt:
+Write an abstract of this article:
+...
+  
+Response:
+The efficient-market hypothesis (EMH) is a hypothesis in financial economics that states that asset prices reflect all available information. This means that it is impossible to 'beat the market' consistently on a risk-adjusted basis, since market prices should only react to new information. The EMH is often tested by looking for market anomalies, or deviations from specific models of risk. While there has been mixed evidence on the validity of the EMH, recent studies have found that return predictability has become more elusive, as predictability fails to work out-of-sample or has been weakened by advances in trading technology and investor learning.
+  
+(text-bison@001@April 27, 2023)
+A prompt used to create a title for an article is similar to a prompt that uses a short phrase to summarize an article. The following summarization prompt returns a title for an article.
+Prompt:
+Write a creative title for the text.
+Text: ...
+  
+Response:
+The title should be related to the topic of the text. The text is about the efficient-market hypothesis, so the title could be something like 'Efficient-Market Hypothesis' or 'The EMH'. The title should also be creative and catchy, so it could be something like 'The EMH: Is the Market Really Efficient?' or 'The EMH: What You Need to Know'.
+  
+(text-bison@001@April 27, 2023)
+Chat summarization prompt
+The following prompt summarizes a customer support chat log:
+Prompt:
+Summarize the following conversation.
+Service Rep: How may I assist you today?
+Customer: I need to change the shipping address for an order.
+Service Rep: Ok, I can help you with that if the order has not been fulfilled from our warehouse yet. But if it has already shipped, then you will need to contact the shipping provider. Do you have the order ID?
+Customer: Yes, it's 88986367.
+Service Rep: One minute please while I pull up your order information.
+Customer: No problem
+Service Rep: Ok, it looks like your order was shipped from our warehouse 2 days ago. It is now in the hands of  the shipping provider, so you will need to contact them to update your delivery details. You can track your order with the shipping provider here: https://www.shippingprovider.com
+Customer: Sigh, ok.
+Service Rep: Is there anything else I can help you with today?
+Customer: No, thanks.
+  
+Response:
+Customer wants to change the shipping address for an order. The service rep checks the order ID and says that since the order has already shipped, the customer needs to contact the shipping provider to make the change. The service rep gives the customer the name and website of the shipping provider.
+  
+(text-bison@001@April 27, 2023)
+Hashtag tokenization summary prompt
+Hashtag tokenization is a form of summarization where the model extracts words and phrases from text that are representative of the text as a whole.
+The following is an example of a prompt that uses hashtag tokenization:
+Prompt:
+What are the hashtags in this tweet:
+Google Cloud
+@googlecloud
+·
+Feb 25
+We heard it through the grapevine:
+- Document AI Workbench is GA and ready for production use through APIs and the Google Cloud Console
+- Deliver higher model accuracy with Workbench
+- Build production-ready models faster with Workbench
+
+Read more ↓
+  
+Response:
+The hashtags in this tweet are:
+- #GoogleCloud
+- #DocumentAI
+- #Workbench
+  
+(text-bison@001@April 27, 2023)
+Extraction prompts
+Vertex AI PaLM API can extract information from text. This page shows you how to design prompts that extract information from text.
+Use cases
+The following are common use cases for extraction:
+Named entity recognition (NER): Extract named entities from text, including people, places, organizations, and dates.
+Relation extraction: Extract the relationships between entities in text, such as family relationships between people.
+Event extraction: Extract events from text, such as project milestones and product launches.
+Question answering: Extract information from text to answer a question.
+Best practices
+Try setting the temperature to zero and top-K to one. Extraction tasks are typically deterministic, so these settings often produce the best results. For more information, learn about the temperature and topK parameters in Text parameter definitions.
+Examples of extraction tasks
+Use the following examples to learn how to design extraction prompts for various use cases.
+Use extraction to answer a question.
+Format extracted content.
+Use extraction to answer a question
+The following prompt includes context and a question. The model searches the context for information that answers the question.
+Prompt:
+Context: There is evidence that there have been significant changes in Amazon rainforest vegetation over the last 21,000 years through the Last Glacial Maximum (LGM) and subsequent deglaciation. Analyses of sediment deposits from Amazon basin paleo lakes and from the Amazon Fan indicate that rainfall in the basin during the LGM was lower than for the present, and this was almost certainly associated with reduced moist tropical vegetation cover in the basin. There is debate, however, over how extensive this reduction was. Some scientists argue that the rainforest was reduced to small, isolated refugia separated by open forest and grassland; other scientists argue that the rainforest remained largely intact but extended less far to the north, south, and east than is seen today. This debate has proved difficult to resolve because the practical limitations of working in the rainforest mean that data sampling is biased away from the center of the Amazon basin, and both explanations are reasonably well supported by the available data.
+Q: What does LGM stands for?
+A:
+  
+Response:
+Last Glacial Maximum
+  
+(text-bison@001@April 27, 2023)
+Format extracted text
+You can extract information from a text source and organize it into a structured format. The following prompt formats extracted text as a JSON file:
+Prompt:
+Extract the technical specifications from the text below in a JSON format. Valid fields are name, network, ram, processor, storage, and color.
+Text: Google Pixel 7, 5G network, 8GB RAM, Tensor G2 processor, 128GB of storage, Lemongrass
+JSON:
+  
+Response:
+{
+  "name": "Google Pixel 7",
+  "network": "5G",
+  "ram": "8GB",
+  "processor": "Tensor G2",
+  "storage": "128GB",
+  "color": "Lemongrass"
+}
+  
+(text-bison@001@April 27, 2023)
+What's next
+Try a quickstart tutorial using Generative AI Studio or the Vertex AI API.
+Learn how to test text prompts.
+Was this helpful?
+Send feedback

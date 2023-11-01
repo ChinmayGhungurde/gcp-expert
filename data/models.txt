@@ -1,0 +1,142 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Available models in Generative AI Studio
+bookmark_border
+On this page
+Model naming scheme
+Foundation models
+32k models
+Language support
+Explore all models in Model Garden
+What's next
+Vertex AI features a growing list of foundation models that you can test, deploy, and customize for use in your applications. Foundation models are fine-tuned for specific use cases and offered at different price points. This page summarizes the models that are available and gives you guidance on which models to use.
+To learn more about all AI models and APIs on Vertex AI, see Explore AI models and APIs.
+Model naming scheme
+Foundation model names have two components: use case and model size. The naming convention is in the format <use case>-<model size>. For example, text-bison represents the Bison text model.
+The model sizes are:
+Bison: Best value in terms of capability and cost.
+Gecko: Smallest and lowest cost model for simple tasks.
+You can use the stable or the latest version of a model. For more information, see Model versions and lifecycle.
+Foundation models
+The following table gives you an overview of the foundation models that are available in Vertex AI.
+Model name Description Model properties
+PaLM 2 for Text (text-bison) Fine-tuned to follow natural language instructions and is suitable for a variety of language tasks, such as:
+Classification
+Sentiment Analysis
+Entity extraction
+Extractive Question Answering
+Summarization
+Re-writing text in a different style
+Ad copy generation
+Concept ideation
+Max input tokens: 8192
+Max output tokens: 1024
+Training data: Up to Feb 2023
+Embeddings for text (textembedding-gecko)
+Model tuning not supported Returns model embeddings for text inputs. 3072 input tokens and outputs 768-dimensional vector embeddings.
+Embeddings for text multilingual (textembedding-gecko-multilingual)
+Model tuning not supported Returns model embeddings for text inputs which support over 100 languages 3072 input tokens and outputs 768-dimensional vector embeddings.
+PaLM 2 for Chat (chat-bison)
+Fine-tuned for multi-turn conversation use cases. Max input tokens: 8192
+Max output tokens: 1024
+Training data: Up to Feb 2023
+Max turns : 2500
+Codey for Code Generation (code-bison) A model fine-tuned to generate code based on a natural language description of the desired code. For example, it can generate a unit test for a function. Max input tokens: 6144
+Max output tokens: 1024
+Codey for Code Chat (codechat-bison) A model fine-tuned for chatbot conversations that help with code-related questions. Max input tokens: 6144
+Max output tokens: 1024
+Codey for Code Completion (code-gecko)
+Model tuning not supported A model fine-tuned to suggest code completion based on the context in code that's written. Max input tokens: 2048
+Max output tokens: 64
+Imagen for Image Generation (imagegeneration) This model supports image generation and can create high quality visual assets in seconds. Max requests per minute per project: 100
+Max images generated: 8
+Max base image (editing/upscaling): 10 MB
+Generated image resolution: 1024x1024 pixels
+Embeddings for multimodal (multimodalembedding) This model generates vectors based on the input you provide, which can include a combination of image and text. Max requests per minute per project: 120
+Max text length: 32 tokens
+Language: English
+Max image size: 20 MB
+Image captioning (imagetext) The model that supports image captioning. This model generates a caption from an image you provide based on the language that you specify. Max requests per minute per project: 500
+Languages: English, French, German, Italian, Spanish
+Max image size: 10 MB
+Max number of captions: 3
+Visual Question Answering - VQA (imagetext) A model which supports image question and answering. Max requests per minute per project: 500
+Languages: English
+Max image size: 10 MB
+Max number of answers: 3
+32k models
+Preview
+This feature is a Preview offering, subject to the Pre-GA Offerings Terms of the GCP Service Specific Terms. Pre-GA products and features may have limited support, and changes to pre-GA products and features may not be compatible with other pre-GA versions. For more information, see the launch stage descriptions. Further, by using the PaLM API on Vertex AI, you agree to the Generative AI Preview terms and conditions (Preview Terms).
+For PaLM APIs on Vertex AI that are not GA, you can process personal data as outlined in the Cloud Data Processing Addendum, subject to applicable restrictions and obligations in the Agreement (as defined in the Preview Terms).
+You can access models that support up to 32k tokens per request. The total amount of input and output tokens adds up to 32k and the maximum output tokens is 8,192. For example, if the input is 28k tokens, the output can be 4k tokens.
+To use a 32k model, specify the fully-qualified model name. For example, text-bison-32k.
+The following table lists the available 32k models:
+Model name Description Model properties
+text-bison-32k
+(Model tuning not supported) Fine-tuned to follow natural language instructions and is suitable for a variety of language tasks. Max input and output tokens combined: 32k
+Training data: Up to Aug 2023
+chat-bison-32k
+(Model tuning not supported) Fine-tuned for multi-turn conversation use cases. Max input and output tokens combined: 32k
+Training data: Up to Aug 2023
+Max turns : 2500
+code-bison-32k
+(Model tuning not supported) A model fine-tuned to generate code based on a natural language description of the desired code. For example, it can generate a unit test for a function. Max input and output tokens combined: 32k
+codechat-bison-32k
+(Model tuning not supported) A model fine-tuned for chatbot conversations that help with code-related questions. Max input and output tokens combined: 32k
+Language support
+Vertex AI PaLM API is Generally Available (GA) for the following languages:
+Arabic (ar)
+Bengali (bn)
+Bulgarian (bg)
+Chinese simplified and traditional (zh)
+Croatian (hr)
+Czech (cs)
+Danish (da)
+Dutch (nl)
+English (en)
+Estonian (et)
+Finnish (fi)
+French (fr)
+German (de)
+Greek (el)
+Hebrew (iw)
+Hindi (hi)
+Hungarian (hu)
+Indonesian (id)
+Italian (it)
+Japanese (ja)
+Korean (ko)
+Latvian (lv)
+Lithuanian (lt)
+Norwegian (no)
+Polish (pl)
+Portuguese (pt)
+Romanian (ro)
+Russian (ru)
+Serbian (sr)
+Slovak (sk)
+Slovenian (sl)
+Spanish (es)
+Swahili (sw)
+Swedish (sv)
+Thai (th)
+Turkish (tr)
+Ukrainian (uk)
+Vietnamese (vi)
+For access to other languages, contact your Google Cloud representative.
+Explore all models in Model Garden
+Model Garden is a platform that helps you discover, test, customize, and deploy Google proprietary and select OSS models and assets. To explore the generative AI models and APIs that are available on Vertex AI, go to Model Garden in the Google Cloud console.
+Go to Model Garden
+To learn more about Model Garden, including available models and capabilities, see Explore AI models in Model Garden.
+What's next
+Try a quickstart tutorial using Generative AI Studio or the Vertex AI API.
+Learn how to test text prompts.
+Learn how to test chat prompts.
+Explore pretrained models in Model Garden.
+Learn how to tune a foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

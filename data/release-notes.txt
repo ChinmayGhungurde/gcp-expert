@@ -1,0 +1,154 @@
+Vertex AI
+Documentation
+Generative AI
+Send feedback
+Generative AI on Vertex AI release notes
+bookmark_border
+On this page
+October 4, 2023
+Model tuning for textembedding-gecko is now available in Preview
+September 1, 2023
+Pricing update
+August 29, 2023
+This page documents production updates to Generative AI on Vertex AI and Vertex AI Model Garden. You can periodically check this page for announcements about new or updated features, bug fixes, known issues, and deprecated functionality.
+October 4, 2023
+Model tuning for textembedding-gecko is now available in Preview
+You can now use supervised tuning to tune the textembedding-gecko model. This feature is in (Preview). For more information, see Tune text embeddings.
+September 1, 2023
+Pricing update
+The pricing for text-bison has been reduced to $0.0005 per 1,000 input and output characters. For details, see Vertex AI pricing.
+August 29, 2023
+New Generative AI on Vertex AI models and expanded language support
+Generative AI on Vertex AI has been updated to include new language model candidates (latest models), language models that support input and output tokens up to 32k, and more supported languages. For details, see Available models and Model versions and lifecycle.
+Stream responses from Generative AI models
+Generative AI model streaming support is now Generally Available (GA). After you send a prompt, the model returns response tokens as they're generated instead of waiting for the entire output to be available.
+Supported models are:
+text-bison
+chat-bison
+code-bison
+codechat-bison
+To learn more, see Stream responses from Generative AI models.
+Model tuning for the text-bison model is now Generally Available (GA)
+Tuning the text-bison model with supervised tuning is now generally available (GA). For more information, see Tune text models.
+Model tuning for the chat-bison model is now available in Preview
+You can now use supervised tuning to tune the chat-bison model. This feature is in (Preview). For more information, see Tune text models.
+New embedding model now available in Preview
+Generative AI on Vertex AI users can now create embeddings using a new model trained on a wide range of non-English languages. The model is in (Preview).
+textembedding-gecko-multilingual
+To learn more, see Get text embeddings.
+Imagen subject tuning and style tuning now generally available (GA)
+Imagen on Vertex AI now offers the following GA features:
+Subject model tuning (standard tuning)*
+Style model tuning*
+* Restricted access feature.
+For more information about Imagen on Vertex AI or how to get access to restricted GA, see the Imagen on Vertex AI overview.
+Reinforcement learning from human feedback (RLHF) tuning for text-bison
+The Generative AI on Vertex AI text generation foundation model (text-bison) now supports RLHF tuning. The RLHF tuning feature is in (Preview). For more information, see Use RLHF model tuning.
+Vertex AI Codey APIs language support
+Vertex AI Codey APIs now support additional programming languages. For more information, see Supported coding languages.
+Vertex AI Codey APIs now support supervised tuning
+The code chat (codechat-bison) and code generation (code-bison) Vertex AI Codey APIs models now support supervised tuning. The supervised tuning for Vertex AI Codey APIs models feature is in (Preview). For more information, see Tune code models.
+Metrics-based model evaluation
+You can evaluate the performance of foundation models and tuned models against an evaluation dataset for classification, summarization, question answering, and general text generation. This feature is available in (Preview)
+To learn more, see Evaluate model performance.
+CountToken API now available in Preview
+The CountToken API is now available in (Preview). You can use this API to get the token count and the number of billable characters for a prompt. To learn more, see Get token count.
+August 9, 2023
+Imagen Multimodal embeddings available in GA
+Imagen on Vertex AI now offers the following GA feature:
+Multimodal embeddings
+This feature incurs different pricing based on if you use image input or text input. For more information, see the multimodal embeddings feature page.
+August 21, 2023
+Model tuning parameter update
+Model tuning jobs now accept optional parameters for model evaluation and Vertex AI TensorBoard integration. This lets you evaluate your model and generate visualizations with a single command. For more information, see Create a model tuning job.
+July 28, 2023
+Model tuning parameter update
+The learning_rate parameter in model tuning is now learning_rate_multiplier. To use the model's or tuning method's default learning rate, use the default learning_rate_multiplier value of 1.0.
+If you haven't configured learning_rate before, no action is needed. If using tuning_method=tune_v2 with the v2.0.0 pipeline template (Python SDK v1.28.1+), the recommended learning rate is 0.0002. To convert your custom learning_rate to learning_rate_multiplier, calculate as follows:
+learing_rate_multiplier = custom_learning_rate_value / 0.0002
+July 18, 2023
+Model tuning updates for text-bison
+Upgraded tuning pipeline now offers more efficient tuning and better performance on text-bison.
+New tuning region (us-central1) available with GPU support.
+New learning_rate parameter lets you adjust the step size at each iteration.
+For details, see Tune language foundation models.
+Chirp GA
+Chirp is now Generally Available (GA). For details, see the following pages:
+Convert text to speech
+Convert speech to text
+July 17, 2023
+Imagen on Vertex AI Generally Available features
+Imagen on Vertex AI now offers the following GA features:
+Image generation (text-to-image generation)*
+Image editing*
+Image visual captioning
+Visual Question Answering (VQA)
+* Restricted access feature.
+For more information about Imagen or how to get access to restricted GA or Preview features, see the Imagen on Vertex AI overview.
+Human face generation now supported
+Imagen now supports human face generation for the following features:
+Image generation (text-to-image generation)*
+Image editing*
+* Restricted access feature.
+Human face generation is enabled by default, except for images with children and/or celebrities. For more information, see the usage guidelines.
+Additional language support
+The Vertex AI PaLM API has added support for the following languages:
+Spanish (es)
+Korean (ko)
+Hindi (hi)
+Chinese (zh)
+For the complete list of supported languages, see Supported languages.
+July 13, 2023
+Batch support for PaLM 2 for Text
+Support for batch text (text-bison) requests is now available in (GA). You can review pricing for the chat-bison model at Vertex AI pricing page.
+July 10, 2023
+PaLM 2 for Chat
+Support for Chat (chat-bison) is now available in (GA). You can review pricing for the chat-bison model at Vertex AI pricing page.
+June 29, 2023
+Vertex AI Codey APIs
+Vertex AI Codey APIs are now generally available (GA). Use the Vertex AI Codey APIs to create solutions with code generation, code completion, and code chat. Because the Vertex AI Codey APIs are GA, you incur usage costs if you use them. To learn about pricing, see the Generative AI on Vertex AI pricing page.
+The models in this release include:
+code-bison (code generation)
+codechat-bison (code chat)
+code-gecko (code completion)
+The maximum tokens for input was increased from 4,096 to 6,144 tokens for code-bison and codechat-bison to allow longer prompts and chat history. The maximum tokens for output was increased from 1,024 to 2,048 for code-bison and codechat-bison to allow for longer responses.
+Additional programming languages are supported. For more information, see Supported coding languages.
+Several fine-tuning datasets were removed from the code-bison and codechat-bison models to implement the following improvements:
+Excessive chattiness.
+Artifacting, such as NBSP (non-breaking space) characters.
+Low quality code responses.
+To learn about cloud horizontals, see Vertex AI certifications.
+June 15, 2023
+PaLM 2 for Chat
+The chat-bison model has been updated to better follow instructions in the context field. For details, on how to create chat prompts for chat-bison, see Design chat prompts.
+June 7, 2023
+PaLM Text and Embeddings APIs, and Generative AI Studio
+Generative AI on Vertex AI is now available in (GA). With this feature launch, you can leverage the Vertex AI PaLM API to generate AI models that you can test, tune, and deploy in your AI-powered applications. Because these features are GA, you incur usage costs if you use the text-bison and textembedding-gecko PaLM API. To learn about pricing, see the Vertex AI pricing page.
+Features and models in this release include:
+PaLM 2 for Text: text-bison
+Embedding for Text: textembedding-gecko
+Generative AI Studio for Language
+Important: With this GA launch, standard security and compliance for Vertex AI is not yet available to Generative AI on Vertex AI. To learn more, see Vertex AI Features and certifications.
+Model Garden
+Model Garden is is now available in (GA). Model Garden is a platform that helps you discover, test, customize, and deploy Vertex AI and select OSS models. These models range from tunable to task-specific and are all available on Model Garden page in the Google Cloud console.
+To get started, see Explore AI models and APIs in Model Garden.
+Vertex AI Codey APIs
+The Vertex AI Codey APIs are now in (Preview). With the Codey APIs, code generation, code completion, and code chat APIs can be used from any Google Cloud project without allowlisting. The APIs can be accessed from the us-central1 region. The Codey APIs can be used in the Generative AI Studio or programmatically in REST commands.
+To get started, see the Code models overview.
+May 10, 2023
+Generative AI on Vertex AI
+Generative AI on Vertex AI is now available in (Preview). With this feature launch, you can leverage the Vertex AI PaLM API to generate AI models that you can test, tune, and deploy in your AI-powered applications.
+Features and models in this release include:
+PaLM 2 for Text: text-bison
+PaLM 2 for Chat: chat-bison
+Embedding for Text: textembedding-gecko
+Generative AI Studio for Language
+Tuning for PaLM 2
+Vertex AI SDK v1.25, which includes new features, such as TextGenerationModel (text-bison), ChatModel (chat-bison), TextEmbeddingModel (textembedding-gecko@001)
+You can interact with the generative AI features on Vertex AI by using Generative AI Studio in the Google Cloud console, the Vertex AI API, and the Vertex AI SDK for Python.
+Learn more about Generative AI on Vertex AI.
+See an Introduction to Generative AI Studio.
+Get started with a Generative AI Studio quickstart.
+Model Garden
+Model Garden is now available in (Preview). The Model Garden is a platform that helps you discover, test, customize, and deploy Vertex AI and select OSS models. These models range from tunable to task-specific - all available on the Model Garden page in the Google Cloud console.
+Send feedback

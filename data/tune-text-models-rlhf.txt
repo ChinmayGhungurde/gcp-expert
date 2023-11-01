@@ -1,0 +1,66 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Tune text models by using RLHF tuning
+bookmark_border
+On this page
+Supported models
+Prepare RLHF tuning datasets
+Prompt dataset
+Human preference dataset
+Evaluation dataset (optional)
+Reward model
+Maintain consistency with production data
+Upload tuning datasets to Cloud Storage
+Preview
+Reinforcement Learning from Human Feedback (RLHF) is a Preview offering, subject to the Pre-GA Offerings Terms of the GCP Service Specific Terms. Pre-GA products and features may have limited support, and changes to pre-GA products and features may not be compatible with other pre-GA versions. For more information, see the launch stage descriptions. Further, by using these features, you agree to the Generative AI Preview terms and conditions (Preview Terms).
+For these features, you can process personal data as outlined in the Cloud Data Processing Addendum, subject to applicable restrictions and obligations in the Agreement (as defined in the Preview Terms).
+Reinforcement learning from human feedback (RLHF) uses feedback gathered from humans to tune a model. RLHF is recommended when the output of your model is complex and difficult to describe. The human feedback is in the form of choices between different output options. These choices provide better data than labeled prompts, used by supervised tuning, to tune a model that produces output that's difficult to describe. If the output from your model isn't difficult to define, consider tuning your text model by using Supervised tuning.
+This page provides detailed information about tuning a text model using RLHF tuning. You learn about which text models support RLHF tuning, how to create a dataset, and how to tune a text model using RLHF tuning. You also learn how to view and load tuned models tuned using RLHF tuning. For more details about RLHF tuning in Vertex AI, see RLHF model tuning.
+Supported models
+The following text models support RLHF tuning:
+The text generation foundation model, text-bison@001. For more information, see Text generation model.
+The t5-small, t5-large, t5-xl, and t5-xxl Flan text-to-text transfer transformer (Flan-T5) models. Flan-T5 models can be fine-tuned to perform tasks such as text classification, language translation, and question answering. For more information, see Flan-T5 checkpoints.
+Prepare RLHF tuning datasets
+RLHF tuning requires that you prepare two datasets and one optional dataset. All datasets are in JSON Lines (JSONL) format and need to be uploaded to a Cloud Storage bucket. The following are the datasets used during RLHF tuning:
+Prompt dataset
+A dataset that contains unlabeled prompts. Each line contains one input_text field that specifies the unlabeled prompt. The input_text fields can be the same as the input_text fields in the human preference dataset, or they can be different. An example of a row in the prompt dataset is the following:
+{"input_text": "Create a description for Plantation Palms."}
+Human preference dataset
+The human preference dataset contains preferences from humans. Each line in the human preference dataset records the preference between two options that were presented to a human. We recommend that the human preference dataset includes 5,000 to 10,000 examples. Each line in the human preference dataset contains one example preference with the following fields:
+input_text - contains the prompt.
+candidate_0 and candidate_1 - each of these fields contains two responses. The human helps tune the model by choosing which of the two responses they prefer.
+choice - contains an integer, 0 or 1, that indicates which candidate the human preferred. A 0 indicates the human chose candidate_0, and a 1 indicates the human chose candidate_1.
+An example of a row in the human preference dataset is the following:
+{"input_text": "Create a description for Plantation Palms.", "candidate_0": "Enjoy some fun in the sun at Gulf Shores.", "candidate_1": "A Tranquil Oasis of Natural Beauty.", "choice": 0}
+Evaluation dataset (optional)
+A dataset that includes unlabeled prompts for prediction after the model is tuned. If the evaluation dataset is provided, then inference is performed on it after the tuning job completes. The format of the evaluation dataset is the same as the format of the prompt dataset. However, the prompts in an evaluation dataset need to be different from the prompts in the prompt dataset.
+Reward model
+The human preference dataset is used to train a reward model. Vertex AI creates and then uses the reward model during RLHF tuning. Reward models are created in a private Cloud Storage bucket in a customer tenant project. A customer tenant project is an internal project that's unique to a customer. You can't access a reward model, and it's deleted after the tuning job completes. For more information, see Tenant project.
+Maintain consistency with production data
+The examples in your datasets should match your expected production traffic. If your dataset contains specific formatting, keywords, instructions, or information, the production data should be formatted in the same way and contain the same instructions.
+For example, if the examples in your dataset include a "question:" and a "context:", production traffic should also be formatted to include a "question:" and a "context:" in the same order as it appears in the dataset examples. If you exclude the context, the model will not recognize the pattern, even if the exact question was in an example in the dataset.
+Upload tuning datasets to Cloud Storage
+To run a tuning job, you need to upload one or more datasets to a Cloud Storage bucket. You can either create a new Cloud Storage bucket or use an existing one to store dataset files. The region of the bucket doesn't matter, but we recommend that you use a bucket that's in the same Google Cloud project where you plan to tune you model.
+After your bucket is ready, upload your dataset file to the bucket.
+Create an RLHF tuning job
+You can perform RLHF tuning by using the Google Cloud console or the Vertex AI SDK for Python.
+Note: RLHF tuning sets the accelerator type and count based on the selected region. Jobs in us-central1 use eight Nvidia A100 80GB. Jobs in europe-west4 use 32 TPU v3s.
+Vertex AI SDK for Python
+Google Cloud console
+To learn how to use the Vertex AI SDK for Python to tune your models with RLHF, open and run the following notebook with Colab, GitHub, or Vertex AI Workbench:
+Open with Colab
+Open with GitHub
+Open with Vertex AI Workbench
+Check tuning operation status
+To check the status of your model tuning job, in the Google Cloud console, go to the Vertex AI Pipelines page. This page shows the status of text and code model tuning jobs.
+Go to Pipelines
+Alternatively, you can configure email notifications for Vertex AI Pipelines so you are notified by email when the model tuning job finishes or fails.
+What's next
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Learn how to enable Data Access audit logs for your endpoints.
+Learn how to evaluate your tuned model.
+Was this helpful?
+Send feedback

@@ -1,0 +1,217 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Generative AI prompt samples
+bookmark_border
+On this page
+Summarization
+Classification
+Extraction
+Writing
+Ideation
+Choose a sample to view an example of a prompt and a response from one of Google's generative AI models.
+You can use the Google Cloud console or the Vertex AI API to query a model with different parameter values to test and compare their results. For more information, see Test text prompts.
+Use case:
+(Select use case)
+   Use case Sample
+Summarization
+Summarization Support rep chat summary Freeform
+You are a customer support manager and would like to quickly see what your team's support calls are about.
+Summarization Summarize news article Freeform
+News takes too much time to read. You want a quicker way to get a summary. Let Vertex AI help you.
+Summarization Support call summary Freeform
+You are a customer service center manager and you need to quickly see what your agents are talking about.
+Summarization Support call next steps Freeform
+You are a customer service center manager. Sometimes your agents forget to note down follow ups. You want to automate follow up lists.
+Summarization Title generation Structured
+Generate a title based on the provided text.
+Summarization Hashtag tokenization Structured
+Create and tokenize hashtags based on the provided text.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Summarization Summarize dialog Structured
+Summarize a conversation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Summarization Transcript summary Structured
+Summarize a block of text.
+Classification
+Classification Classify help tickets Structured
+Based on your customer's answer, you want to automate routing of your customer to the proper service queue. Use few-shot learning.
+
+
+
+
+
+Classification Person sentiment Freeform
+You would like to see how reporters write about certain people. You have articles and would like to see if a certain person is written about positively or negatively.
+Classification Classify text Structured
+You are an intern at a library and your job is to classify hundreds of articles every day. You'd rather automate this and do something else.
+
+
+
+
+
+
+Classification Classify articles Freeform
+You are an intern at a library and your job is to classify hundreds of articles every day. You'd rather automate this and do something else.
+Classification Classify headlines Structured
+Few shot classification on a given topic.
+
+
+
+
+
+
+Classification Classify objects Structured
+Classify an object using a small number of examples (few-shot prompting).
+
+
+
+Classification Sentiment analysis Structured
+Explain the sentiment expressed in a body of text.
+Extraction
+Extraction Tech specs Structured
+Generate technical specification from text of a Pixel phone into JSON, one-shot.
+
+
+
+
+
+
+
+
+
+
+
+
+Extraction Troubleshoot Freeform
+Given description of the different status lights on the Google WiFi router, what should be the troubleshooting step.
+Extraction Contract analysis Freeform
+You are a partner of a law firm. Your associates are bored of reading contracts to find specific provisions when they can work on more intellectually challenging tasks.
+Extraction Question answering Structured
+Answer questions from given background texts.
+Writing
+Writing Product announcement Freeform
+You work in Google's device marketing team and you need to create marketing pitch for the new Pixel 7 Pro. You have writers block and need help.
+Writing Ad copy Freeform
+You are a marketer and want to create different versions of the same ad to target different audiences. You would like some suggestions.
+Writing Essay outline Freeform
+Generate an outline for an essay on a particular topic.
+Writing Grammar help Freeform
+Correct grammar in text.
+Writing Job post Freeform
+Write ad copy for a job post based on a description.
+Writing Email Freeform
+Write an email or letter based on the specified content.
+Ideation
+Ideation Reading test Freeform
+Your child is preparing for SAT verbal exam and needs more practice in reading comprehension.
+Ideation Meme ideas Freeform
+Generate memes based on a certain topic.
+Ideation Interview questions Freeform
+Generate a list of interview questions targeting a specific position.
+Ideation Creative naming Freeform
+Generate ideas for names of a specified entity.
+Ideation Advice Freeform
+Get tips and advice on general topics.
+Was this helpful?
+Send feedback

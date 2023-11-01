@@ -1,0 +1,162 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Use code models and the Vertex AI SDK
+bookmark_border
+On this page
+Generate a code function
+Generate code for code completion
+Create a code chat
+Stream code model responses
+Stream code generation
+Stream code chat
+What's next
+There are three generative AI code foundation models in Vertex AI. The three models are a code generation model, a code completion model, and a code chat model.
+The code generation model name is code-bison and its class in the Vertex AI SDK is CodeGenerationModel.
+The code completion model name is code-gecko and its class in the Vertex AI SDK is the same class used for code generation, CodeGenerationModel.
+The code chat model name is codechat-bison and its class in the Vertex AI SDK is CodeChatModel.
+The following topics show you how to use these classes and the Vertex AI SDK to perform some common code-related generative AI tasks.
+Generate a code function
+The use cases for the code generation foundation model include designing unit tests, writing a function, and creating a class. To generate code, use the same class that's used to create code completion, CodeGenerationModel. To create a solution that generates code, pass in the name of a version of the code generation model, such as code-bison@001. To learn more about the code generation foundation model, see Create prompts to generate code and Test code generation prompts.
+The following code sample writes a function that detects if a year is a leap year.
+from vertexai.language_models import CodeGenerationModel
+
+code_generation_model = CodeGenerationModel.from_pretrained("code-bison@001")
+print(code_generation_model.predict(
+    prefix="Write a function that checks if a year is a leap year.",
+    # The following parameters are optional:
+    # max_output_tokens=1024,
+    # temperature=0.0,
+))
+The output might be similar to the following:
+I will write a function to check if a year is a leap year.
+
+**The function will take a year as input and return a boolean value**.
+
+**The function will first check if the year is divisible by 4.**
+
+**If the year is divisible by 4, the function will then check if the year is divisible by 100.**
+
+**If the year is divisible by 100, the function will then check if the year is divisible by 400.**
+
+**If the year is divisible by 400, the function will ...
+Generate code for code completion
+Code completion is code that's predicted to complete code as it's written. The generated prediction appears as you type. If you want to create a code completion solution, use the CodeGenerationModel class. This is the same class used to generate code, such as a function. To generate code that's predicted to complete code as it's written, call CodeGenerationModel.from_pretrained and pass in the name of a version of the code completion model. To learn more about the code completion foundation model, see Create prompts for code completion and Test code completion prompts.
+The following sample code uses the most recent stable version of code-gecko to return code that's predicted to complete the start of a function that reverses a string.
+from vertexai.language_models import CodeGenerationModel
+
+code_completion_model = CodeGenerationModel.from_pretrained("code-gecko@001")
+print(code_completion_model.predict(
+    prefix="def reverse_string(s):",
+    # Optional:
+    suffix="    return reversed_str",
+    max_output_tokens=64,
+    # temperature=0.0,
+))
+The output is similar to the following:
+"""
+:type s: str
+:rtype: str
+"""
+reversed_str = ""
+for i in range(len(s) - 1, -1, -1):
+    reversed_str += s[i]
+Create a code chat
+You might want to create a chat session that is specifically about code. For example, you might want to use chat to learn about a coding language or syntax. To create a code chat session with the Vertex AI SDK, use the start_chat method on an instance of a CodeChatModel. Unlike a text chat, a code chat created with the Vertex AI SDK doesn't use the InputOutputTextPair class. To learn more about the code chat foundation model, see Create prompts for code chat and Test code chat prompts.
+The following uses code chat to request information about how to write a function.
+from vertexai.language_models import CodeChatModel
+
+code_chat_model = CodeChatModel.from_pretrained("codechat-bison@001")
+code_chat = code_chat_model.start_chat()
+print(code_chat.send_message("Please help write a function that prints its own source code"))
+The output might be similar to the following:
+Sure, here is a function that prints its own source code:
+
+```
+def print_source_code():
+  """Prints the source code of this function."""
+
+  # Get the source code of this function.
+  source_code = inspect.getsource(print_source_code)
+
+  # Print the source code.
+  print(source_code)
+
+```
+
+This function works by first getting the source code of the function using the
+`inspect.getsource()` function. Then, it prints the source code to the console.
+Stream code model responses
+You might want to receive responses from the code generation and code chat models as they're generated. Receiving responses from a foundation model as the responses are generated is known as streaming. When code generation and code chat model responses are streamed, the output tokens are sent when they're generated. To stream code generation, use the CodeGenerationModel.predict_streaming method. To stream code chat, use the CodeChatModel.predict_streaming method. To learn more about streaming from foundation models, see Stream responses from Generative AI models.
+Stream code generation
+The following sample code streams code that checks if a year is a leap year. It also outputs the time before and the time after from_pretrained is called to demonstrate how long it takes to stream the output.
+import datetime
+from vertexai.language_models import CodeGenerationModel
+
+code_generation_model = CodeGenerationModel.from_pretrained("code-bison@001")
+
+print("Start: ", datetime.datetime.now())
+for response in code_generation_model.predict_streaming(
+    prefix="Write a function that checks if a year is a leap year.",
+    # Optional:
+    # max_output_tokens=1024,
+    # temperature=0.0,
+):
+    print(datetime.datetime.now(), "|", response)
+print("End: ", datetime.datetime.now())
+The response might be similar to the following:
+Start:  YYYY-MM-DD 06:31:45.759810
+YYYY-MM-DD 06:31:46.536173 | To check if a year is a leap year, we can use the following step
+YYYY-MM-DD 06:31:46.611856 | s:
+
+1. **Check if the year is divisible by 4.** If it is not, th
+YYYY-MM-DD 06:31:46.667330 | en it is not a leap year.
+2. **Check if the year is divisible by
+YYYY-MM-DD 06:31:46.805714 |  100.** If it is, then it is not a leap year unless it is also d
+YYYY-MM-DD 06:31:46.940925 | ivisible by 400.
+3. **If the year is divisible by 4 but not by 1
+YYYY-MM-DD 06:31:47.033529 | 00, then it is a leap year.**
+
+For example, the year 2020 is div
+YYYY-MM-DD 06:31:47.110856 | isible by
+End:  YYYY-MM-DD 06:31:47.112951
+Stream code chat
+The following sample code streams code chat that is in response to a chatbot request to write a function that prints its own source code. The code sample also outputs the time before and the time after from_pretrained is called to demonstrate how long it takes to stream the output.
+import datetime
+from vertexai.language_models import CodeChatModel
+
+code_chat_model = CodeChatModel.from_pretrained("codechat-bison@001")
+code_chat = chat_model.start_chat()
+
+print("Start: ", datetime.datetime.now())
+for response in code_chat.send_message_streaming(
+    message="Please help write a function that prints its own source code",
+    # Optional:
+    max_output_tokens=1024,
+):
+    #print(datetime.datetime.now(), "|", response)
+    print(">>>")
+    print(response)
+print("End: ", datetime.datetime.now())
+The response might be similar to the following:
+```
+Start:  YYYY-MM-DD 06:32:10.733415
+>>>
+```python
+def print_source(func):
+    with open(func.__file__, '
+>>>
+r') as f:
+        source = f.read()
+    print(source)
+```
+End:  YYYY-MM-DD 06:32:11.764794
+```
+What's next
+Learn how to use text model classes and the Vertex AI SDK.
+Learn how to use the Vertex AI SDK to tune foundation models.
+Learn about Vertex AI SDK classes not related to generative AI.
+Was this helpful?
+Send feedback

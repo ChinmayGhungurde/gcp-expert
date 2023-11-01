@@ -1,0 +1,19 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Quickstart: Generate and export images using Imagen text-to-image (Console)
+On this page
+Feature and documentation access
+What's next
+Image generated using Imagen on Vertex AI from the prompt: A dog reading the newspaper.
+Feature and documentation access
+This feature and documentation are available to approved users. For information about requesting access to the Trusted Tester program, see the Imagen on Vertex AI overview.
+What's next
+Learn about all image generative AI features in the Imagen on Vertex AI overview.
+Read usage guidelines for Imagen on Vertex AI.
+Explore pretrained models in Model Garden.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

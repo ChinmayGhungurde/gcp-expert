@@ -1,0 +1,450 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Stream responses from Generative AI models
+bookmark_border
+On this page
+Generative AI Studio
+Examples using the streaming REST API
+Examples using Vertex AI SDK for Python for streaming
+Available client libraries
+Responsible AI
+What's next
+Streaming involves receiving responses to prompts as they are generated. That is, as soon as the model generates output tokens, the output tokens are sent.
+You can make streaming requests to the Vertex AI Large Language Model (LLM) using the following:
+The Vertex AI REST API
+The Vertex AI SDK for Python
+A client library
+The streaming and non-streaming APIs use the same parameters, and there is no difference in pricing and quotas.
+Generative AI Studio
+You can use Generative AI Studio to design and run prompts and receive streamed responses. From the prompt design page, click the Streaming Response button to enable streaming.
+Examples using the streaming REST API
+Note: Parameters differ between model types.
+Text
+Chat
+Code
+Code chat
+Note: The current supported model is text-bison. See available versions.
+Request
+  PROJECT_ID=
+YOUR_PROJECT_ID
+  PROMPT="
+PROMPT"
+  MODEL_ID=
+text-bison
+
+  curl \
+  -X POST \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID}:serverStreamingPredict -d \
+  '{
+    "inputs": [
+      {
+        "struct_val": {
+          "prompt": {
+            "string_val": [ "'"${PROMPT}"'" ]
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "struct_val": {
+        "temperature": { "float_val": 0.8 },
+        "maxOutputTokens": { "int_val": 1024 },
+        "topK": { "int_val": 40 },
+        "topP": { "float_val": 0.95 }
+      }
+    }
+  }'
+Response
+{
+  "outputs": [
+    {
+      "structVal": {
+        "citationMetadata": {
+          "structVal": {
+            "citations": {}
+          }
+        },
+        "safetyAttributes": {
+          "structVal": {
+            "categories": {},
+            "scores": {},
+            "blocked": {
+              "boolVal": [
+                false
+              ]
+            }
+          }
+        },
+        "content": {
+          "stringVal": [
+            RESPONSE
+          ]
+        }
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Examples using Vertex AI SDK for Python for streaming
+For information about installing the Vertex AI SDK for Python, see Install the Vertex AI SDK for Python.
+Text
+Chat
+Code
+Code chat
+  import vertexai
+  from vertexai.language_models import TextGenerationModel
+
+  def streaming_prediction(
+      project_id: str,
+      location: str,
+  ) -> str:
+      """Streaming Text Example with a Large Language Model"""
+
+  vertexai.init(project=project_id, location=location)
+
+  text_generation_model = TextGenerationModel.from_pretrained("text-bison")
+  parameters = {
+      "temperature": temperature,  # Temperature controls the degree of randomness in token selection.
+      "max_output_tokens": 256,  # Token limit determines the maximum amount of text output.
+      "top_p": 0.8,  # Tokens are selected from most probable to least until the sum of their probabilities equals the top_p value.
+      "top_k": 40,  # A top_k of 1 means the selected token is the most probable among all tokens.
+  }
+
+  responses = text_generation_model.predict_streaming(prompt="Give me ten interview questions for the role of program manager.", **parameters)
+  for response in responses:
+      print(response)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Available client libraries
+You can use one of the following client libraries to stream responses:
+Python
+Node.js
+Java
+To view sample code requests and responses using the REST API, see Examples using the REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python.
+Responsible AI
+Responsible Artificial Intelligence (RAI) filters scan the streaming output as the model generates it. If a violation is detected, the filters block the offending output tokens, and return an output with a blocked flag under safetyAttributes, which terminates the stream.
+What's next
+Learn about designing text prompts. and text chat prompts.
+Learn how to test prompts in Generative AI Studio.
+Learn about text embeddings.
+Try to tune a language foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

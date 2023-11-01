@@ -1,0 +1,23 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Generate images using text prompts
+bookmark_border
+On this page
+Feature and documentation access
+What's next
+Imagen now supports photorealistic human face generation for the this feature. Human face generation is enabled by default, except for images with children and/or celebrities. For more information, see the usage guidelines.
+Image generated using Imagen on Vertex AI from the prompt: magazine style, 4k, photorealistic, modern red armchair, natural lighting.
+Feature and documentation access
+This feature and documentation are available to approved users. For information about requesting access to the Trusted Tester program, see the Imagen on Vertex AI overview.
+What's next
+View videos describing Vertex AI foundation models including Imagen, the text-to-image foundation model that lets you generate and edit images:
+Introduction to foundation models on Google Cloud
+Imagen on Vertex AI: Create and edit images from text
+Read blog posts describing Generative AI and Generative AI on Vertex AI:
+The Prompt: Choosing generative AI use cases
+Google Cloud advances generative AI at I/O: new foundation models, embeddings, and tuning tools in Vertex AI
+Was this helpful?
+Send feedback

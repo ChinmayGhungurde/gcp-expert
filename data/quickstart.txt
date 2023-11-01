@@ -1,0 +1,42 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Try Generative AI Studio
+On this page
+Before you begin
+Test a language model from the prompt gallery
+Design and test your prompt
+What's next
+General availability
+PaLM APIs for text, chat, code, embeddings, and supervised tuning for text-bison are now GA and incur costs when they're used. For more information, see Pricing for Generative AI on Vertex AI and the Generative AI on Vertex AI release notes.
+Use Generative AI Studio to design, test, and customize your prompts sent to Google's PaLM 2 Large Language Model (LLM). After the LLM processes the prompt, a response is received.
+Before you begin
+Before you can try Generative AI Studio, you must Set up a project and a development environment. Google Cloud organizes resources into projects. This lets you collect in one place related resources for a single application.
+Test a language model from the prompt gallery
+Go to the Generative AI Studio page from the Vertex AI section in the Google Cloud console.
+Generative AI Studio
+Click Open on the Language model option.
+From the Language studio, navigate to the Prompt Gallery, and select Open on the Transcript Summarization prompt example. The prompt, model, and parameters are prefilled with the values from the sample prompt.
+Click Submit to get a response from the test model. Scroll down to see all of the results.
+To see different results, change the Model in the model drop-down, and adjust the parameters.
+Design and test your prompt
+You can create and test your prompts (inputs) for tasks that are relevant to your business use case, and generate responses. By adding inputs and outputs, the LLM is capable of learning in-context from the examples of responses.
+You can create a prompt, which gives a precise instruction, and asks the LLM to complete a sentence for you or to answer one-time questions.
+Go to the Generative AI Studio page from the Vertex AI section in the Google Cloud console.
+Generative AI Studio
+Click Open on the Language model option.
+Click Create Prompt. An untitled prompt opens.
+In the prompt box, add a clear and concise description of the task that you want the model to do.
+As an example, ask the model to Suggest a name for a flower shop that sells bouquets of dried flowers.
+Click Submit.
+Responses appear in response box. If you want to view different results, adjust the parameters, and click Submit.
+What's next
+Learn about designing text prompts. and text chat prompts.
+Learn about text embeddings.
+Try to tune a language foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Learn about streaming responses from a model.
+Was this helpful?
+Send feedback

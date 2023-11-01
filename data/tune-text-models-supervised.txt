@@ -1,0 +1,609 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Tune text models by using supervised tuning
+bookmark_border
+On this page
+Text model supervised tuning step-by-step guidance
+Supported models
+Use cases for using supervised tuning on text models
+Tuning and evaluation metrics
+Prepare a supervised tuning dataset
+Supervised tuning uses labeled examples to tune a model. Each example demonstrates output you want from your text model during inference. Supervised tuning is a good option when the output of your model isn't very complex and is easy to define. If the output from your model is difficult to define, consider tuning your text model by using Reinforcement learning from human feedback (RLHF) tuning.
+Text model supervised tuning step-by-step guidance
+The following guided tutorial helps you learn how to use supervised tuning to tune a text foundation model in the Google Cloud console.
+To follow step-by-step guidance for this task directly in the Google Cloud console, click Guide me:
+Guide me
+Supported models
+The following text models support supervised tuning:
+text-bison@001
+chat-bison@001 Preview
+Use cases for using supervised tuning on text models
+Foundation text models work well when the desired output or task can be easily and concisely defined in a prompt and the prompt consistently produces the desired output. If you want a model to learn something niche or specific that deviates from general language patterns, then you might want to consider tuning that model. For example, you can use model tuning to teach the model the following:
+Specific structures or formats for generating output.
+Specific behaviors such as when to provide a terse or verbose output.
+Specific customized outputs for specific types of inputs.
+The following examples are use cases that are difficult to capture with only prompt instructions:
+Classification: The expected response is a specific word or phrase.
+Prompt:
+Classify the following text into one of the following classes:
+[business, entertainment].
+Text: Diversify your investment portfolio
+  
+Response:
+business
+  
+(text-bison@001@April 27, 2023)
+Tuning the model can help prevent the model from generating verbose responses.
+Summarization: The summary follows a specific format. For example, you might need to remove personally identifiable information (PII) in a chat summary.
+Prompt:
+Summarize:
+Jessica: That sounds great! See you in Times Square!
+Alexander: See you at 10!
+  
+Response:
+#Person1 and #Person2 agree to meet at Times Square at 10:00 AM.
+  
+(text-bison@001@April 27, 2023)
+This formatting of replacing the names of the speakers with #Person1 and #Person2 is difficult to describe and the foundation model might not naturally produce such a response.
+Extractive question answering: The question is about a context and the answer is a substring of the context.
+Prompt:
+Context: There is evidence that there have been significant changes in Amazon rainforest vegetation over the last 21,000 years through the Last Glacial Maximum (LGM) and subsequent deglaciation.
+Question: What does LGM stand for?
+  
+Response:
+Last Glacial Maximum
+  
+(text-bison@001@April 27, 2023)
+The response "Last Glacial Maximum" is a specific phrase from the context.
+Chat: You need to customize model response to follow a persona, role, or character.
+Prompt:
+User: What's the weather like today?
+  
+Response:
+Assistant: As the virtual shopkeeper of Lola Lollipops, I can only help you with the purchases and shipping.
+  
+You can also tune a model in the following situations:
+Prompts are not producing the desired results consistently enough.
+The task is too complicated to define in a prompt. For example, you want the model to do behavior cloning for a behavior that's hard to articulate in a prompt.
+You have complex intuitions about a task that are easy to elicit but difficult to formalize in a prompt.
+You want to reduce the context length by removing the few-shot examples.
+Tuning and evaluation metrics
+Getting TensorBoard metrics visualization is available for text-bison only.
+You can configure a model tuning job to collect and report model tuning and model evaluation metrics, which can then be visualized by using Vertex AI TensorBoard. To connect your tuning job to Vertex AI TensorBoard, specify a Vertex AI TensorBoard instance ID and an evaluation dataset.
+The supported metrics are as follows:
+Model tuning metrics:
+/train_total_loss: Loss for the tuning dataset at a training step.
+/train_fraction_of_correct_next_step_preds: The token accuracy at a training step. A single prediction consists of a sequence of tokens. This metric measures the accuracy of the predicted tokens when compared to the ground truth in the tuning dataset.
+/train_num_predictions: Number of predicted tokens at a training step.
+Model evaluation metrics:
+/eval_total_loss: Loss for the evaluation dataset at an evaluation step.
+/eval_fraction_of_correct_next_step_preds: The token accuracy at an evaluation step. A single prediction consists of a sequence of tokens. This metric measures the accuracy of the predicted tokens when compared to the ground truth in the evaluation dataset.
+/eval_num_predictions: Number of predicted tokens at an evaluation step.
+The metrics visualizations are available after the model tuning job completes. If you specify only a Vertex AI TensorBoard instance ID and not an evaluation dataset when you create the tuning job, only the visualizations for the tuning metrics are available.
+Prepare a supervised tuning dataset
+The dataset used to tune a foundation model needs to include examples that align with the task that you want the model to perform. Structure your training dataset in a text-to-text format. Each record, or row, in the dataset contains the input text (also referred to as the prompt) which is paired with its expected output from the model. Supervised tuning uses the dataset to teach the model to mimic a behavior, or task, you need by giving it hundreds of examples that illustrate that behavior.
+Your dataset must include a minimum of 10 examples, but we recommend at least 100 to 500 examples for good results. The more examples you provide in your dataset, the better the results.
+For sample datasets, see Sample datasets on this page.
+Dataset format
+Your model tuning dataset must be in JSON Lines (JSONL) format where each line contains a single tuning example. The dataset format used to tune a text generation model is different from the dataset format for tuning a text chat model. Before you tune your model, you upload your dataset to a Cloud Storage bucket.
+Text
+Chat (Preview)
+Each example is composed of an input_text field that contains the prompt to the model and an output_text field that contains an example response that the tuned model is expected to produce.
+The maximum token length for input_text is 8,192 and the maximum token length for output_text is 1,024. If either field exceeds the maximum token length, the excess tokens are truncated.
+The maximum number of examples that a dataset for a text generation model can contain is 10,000.
+Dataset example
+{"input_text": "question: How many people live in Beijing? context: With over 21 million residents, Beijing is the world's most populous national capital city and is China's second largest city after Shanghai. It is located in Northern China, and is governed as a municipality under the direct administration of the State Council with 16 urban, suburban, and rural districts.[14] Beijing is mostly surrounded by Hebei Province with the exception of neighboring Tianjin to the southeast; together, the three divisions form the Jingjinji megalopolis and the national capital region of China.", "output_text": "over 21 million people"}
+{"input_text": "question: How many parishes are there in Louisiana? context: The U.S. state of Louisiana is divided into 64 parishes (French: paroisses) in the same manner that 48 other states of the United States are divided into counties, and Alaska is divided into boroughs.", "output_text": "64"}
+Include instructions in examples
+For tasks such as classification, it is possible to create a dataset of examples that don't contain instructions. However, excluding instructions from the examples in the dataset leads to worse performance after tuning than including instructions, especially for smaller datasets.
+Excludes instructions:
+{"input_text": "5 stocks to buy now",
+"output_text": "business"}
+Includes instructions:
+{"input_text": "Classify the following text into one of the following classes:
+[business, entertainment] Text: 5 stocks to buy now",
+"output_text": "business"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sample datasets
+You can use a sample dataset to get started with tuning the text-bison@001 model. The following is a classification task dataset that contains sample medical transcriptions for various medical specialties. The data is from mtsamples.com as made available on Kaggle.
+Sample tuning dataset URI:
+gs://cloud-samples-data/vertex-ai/model-evaluation/peft_train_sample.jsonl
+Sample eval dataset URI:
+gs://cloud-samples-data/vertex-ai/model-evaluation/peft_eval_sample.jsonl
+To use these datasets, specify the URIs in the applicable parameters when creating a text model supervised tuning job.
+For example:
+...
+"dataset_uri": "gs://cloud-samples-data/vertex-ai/model-evaluation/peft_train_sample.jsonl",
+...
+"evaluation_data_uri": "gs://cloud-samples-data/vertex-ai/model-evaluation/peft_eval_sample.jsonl",
+...
+Maintain consistency with production data
+The examples in your datasets should match your expected production traffic. If your dataset contains specific formatting, keywords, instructions, or information, the production data should be formatted in the same way and contain the same instructions.
+For example, if the examples in your dataset include a "question:" and a "context:", production traffic should also be formatted to include a "question:" and a "context:" in the same order as it appears in the dataset examples. If you exclude the context, the model will not recognize the pattern, even if the exact question was in an example in the dataset.
+Upload tuning datasets to Cloud Storage
+To run a tuning job, you need to upload one or more datasets to a Cloud Storage bucket. You can either create a new Cloud Storage bucket or use an existing one to store dataset files. The region of the bucket doesn't matter, but we recommend that you use a bucket that's in the same Google Cloud project where you plan to tune you model.
+After your bucket is ready, upload your dataset file to the bucket.
+Create a text model supervised tuning job
+You can create a supervised text model tuning job by using the Google Cloud console, API, or the Vertex AI SDK for Python. For guidance on model tuning configurations, see Recommended configurations.
+REST
+Vertex AI SDK for Python
+Node.js
+Java
+Console
+To create a model tuning job, send a POST request by using the pipelineJobs method. Note that some of the parameters are not supported by all of the models. Ensure that you only include the applicable parameters for the model that you're tuning.
+Before using any of the request data, make the following replacements:
+PIPELINEJOB_DISPLAYNAME: A display name for the pipelineJob.
+OUTPUT_DIR: The URI of the bucket to output pipeline artifacts to.
+PROJECT_ID: Your project ID.
+MODEL_DISPLAYNAME: A display name for the model uploaded (created) by the pipelineJob.
+DATASET_URI: URI of your dataset file.
+TUNING_LOCATION: The region where model tuning takes place. Supported regions are:
+us-central1: Uses eight A100 80 GB GPUs. Make sure you have enough quota. Supports CMEK and VPC‑SC.
+europe-west4: Uses 64 cores of the TPU v3 pod. Make sure you have enough quota. CMEK isn't supported, but VPC‑SC is supported.
+LARGE_MODEL_REFERENCE: Name of the foundation model to tune. The options are:
+text-bison
+chat-bison
+DEFAULT_CONTEXT (chat only): The context that applies to all tuning examples in the tuning dataset. Setting the `context` field in an example overrides the default context.
+STEPS: The number of steps to run for model tuning. The default value is 300. The batch size varies by tuning location:
+us-central1 has a batch size of 8.
+europe-west4 has a batch size of 24.
+If there are 240 examples in a training dataset, in europe-west4, it takes 240 / 24 = 10 steps to process the entire dataset once. In us-central1, it takes 240 / 8 = 30 steps to process the entire dataset once.
+LEARNING_RATE_MULTIPLIER: A multiplier to apply to the recommended learning rate. To use the recommended learning rate, use 1.0.
+EVAL_DATASET_URI (text only): (optional) The URI of the JSONL file that contains the evaluation dataset for batch prediction and evaluation. For more information, see Dataset format for tuning a code model. The evaluation dataset requires between ten and 250 examples.
+EVAL_INTERVAL (text only): (optional, default 20) The number of tuning steps between each evaluation. Because the evaluation runs on the entire evaluation dataset, a smaller evaluation interval results in a longer tuning time. For example, if steps is 200 and EVAL_INTERVAL is 100, then you will get only two data points for the evaluation metrics. This parameter requires that the evalutation_data_uri is set.
+ENABLE_EARLY_STOPPING: (optional, default true) A boolean that, if set to true, stops tuning before completing all the tuning steps if model performance, as measured by the accuracy of predicted tokens, does not improve enough between evaluations runs. If false, tuning continues until all the tuning steps are complete. This parameter requires that the evaluation_data_uri is set.
+TENSORBOARD_RESOURCE_ID (text only): (optional) The ID of the Vertex AI TensorBoard instance to create an experiment on after the tuning job completes. The Vertex AI TensorBoard instance needs to be in the same region as the tuning pipeline.
+ENCRYPTION_KEY_NAME: (optional) The fully qualified name of the CMEK key that you want to use for data encryption. Available in supported regions only.
+TEMPLATE_URI: The tuning template to use depends on the model that you're tuning:
+Text model: https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v2.0.0
+Chat model: https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-chat-model/v3.0.0
+SERVICE_ACCOUNT: (optional) The service account that Vertex AI uses to run your pipeline job. By default, your project's Compute Engine default service account (PROJECT_NUMBER‑compute@developer.gserviceaccount.com) is used. Learn more about attaching a custom service account.
+HTTP method and URL:
+POST https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs
+Request JSON body:
+{
+  "displayName": "
+PIPELINEJOB_DISPLAYNAME",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "gs://
+OUTPUT_DIR",
+    "parameterValues": {
+      "project": "
+PROJECT_ID",
+      "model_display_name": "
+MODEL_DISPLAYNAME",
+      "dataset_uri": "gs://
+DATASET_URI",
+      "location": "us-central1",
+      "large_model_reference": "
+LARGE_MODEL_REFERENCE",
+      "default_context": "
+DEFAULT_CONTEXT (chat only)",
+      "train_steps": 
+STEPS,
+      "learning_rate_multiplier": 
+LEARNING_RATE_MULTIPLIER,
+      "evaluation_data_uri": "gs://
+EVAL_DATASET_URI (text only)",
+      "evaluation_interval": 
+EVAL_INTERVAL (text only),
+      "enable_early_stopping": 
+ENABLE_EARLY_STOPPING,
+      "tensorboard_resource_id": "
+TENSORBOARD_ID (text only)",
+      "encryption_spec_key_name": "
+ENCRYPTION_KEY_NAME"
+    }
+  },
+  "encryptionSpec": {
+    "kmsKeyName": "
+ENCRYPTION_KEY_NAME"
+  },
+  "serviceAccount": "
+SERVICE_ACCOUNT",
+  "templateUri": "
+TEMPLATE_URI"
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following. Note that pipelineSpec has been truncated to save space.
+Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note: All data is processed in the same region as the pipeline job (either us-central1 or europe-west4). After the job is complete, the tuned model is uploaded to us-central1.
+Example curl command
+PROJECT_ID=myproject
+DATASET_URI=gs://my-gcs-bucket-uri/dataset
+OUTPUT_DIR=gs://my-gcs-bucket-uri/output
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json; charset=utf-8" \
+"https://europe-west4-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/europe-west4/pipelineJobs?pipelineJobId=tune-large-model-$(date +%Y%m%d%H%M%S)" -d \
+$'{
+  "displayName": "tune-llm",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "'${OUTPUT_DIR}'",
+    "parameterValues": {
+      "project": "'${PROJECT_ID}'",
+      "model_display_name": "The display name for your model in the UI",
+      "dataset_uri": "'${DATASET_URI}'",
+      "location": "us-central1",
+      "large_model_reference": "text-bison@001",
+      "train_steps": 300,
+      "learning_rate_multiplier": 1.0,
+      "encryption_spec_key_name": "projects/myproject/locations/us-central1/keyRings/sample-key/cryptoKeys/sample-key"
+    }
+  },
+  "encryptionSpec": {
+    "kmsKeyName": "projects/myproject/locations/us-central1/keyRings/sample-key/cryptoKeys/sample-key"
+  },
+  "templateUri": "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v2.0.0"
+}'
+Recommended configurations
+The following table shows the recommended configurations for tuning a foundation model by task:
+Task No. of examples in dataset Train steps
+Classification 100+ 100-500
+Summarization 100-500+ 200-1000
+Extractive QA 100+ 100-500
+Chat 200+ 1,000
+For train steps, you can try more than one value to get the best performance on a particular dataset, for example, 100, 200, 500.
+View a list of tuned models
+You can view a list of models in your current project, including your tuned models, by using the Google Cloud console or the Vertex AI SDK for Python.
+Python
+Console
+Before trying this sample, follow the Python setup instructions in the Vertex AI quickstart using client libraries. For more information, see the Vertex AI Python API reference documentation.
+To authenticate to Vertex AI, set up Application Default Credentials. For more information, see Set up authentication for a local development environment.
+View on GitHub Feedback
+
+import vertexai
+from vertexai.language_models import TextGenerationModel
+
+
+def list_tuned_models(
+    project_id: str,
+    location: str,
+) -> None:
+    """List tuned models."""
+
+    vertexai.init(project=project_id, location=location)
+    model = TextGenerationModel.from_pretrained("text-bison@001")
+    tuned_model_names = model.list_tuned_model_names()
+    print(tuned_model_names)
+
+    return tuned_model_names
+
+
+if __name__ == "__main__":
+    list_tuned_models()
+Load a tuned text model
+The following sample code uses the Vertex AI SDK for Python to load a text generation model that was tuned using supervised tuning:
+import vertexai
+from vertexai.preview.language_models import TextGenerationModel
+
+model = TextGenerationModel.get_tuned_model(
+TUNED_MODEL_NAME)
+Replace TUNED_MODEL_NAME with the qualified resource name of your tuned model. This name is in the format projects/PROJECT_ID/locations/LOCATION/models/MODEL_ID. You can find the model ID of your tuned model in Vertex AI Model Registry.
+Troubleshooting
+The following topics might help you solve issues with tuning a foundation text model using supervised tuning.
+Attempting to tune a model returns a 500 error or Internal error encountered
+If you encounter this 500 error when trying to tune a model, try this workaround:
+Run the following cURL command to create an empty Vertex AI dataset. Ensure that you configure your project ID in the command.
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://europe-west4-aiplatform.googleapis.com/ui/projects/$PROJECT_ID/locations/europe-west4/datasets \
+-d '{
+    "display_name": "test-name1",
+    "metadata_schema_uri": "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml",
+    "saved_queries": [{"display_name": "saved_query_name", "problem_type": "IMAGE_CLASSIFICATION_MULTI_LABEL"}]
+}'
+After the command completes, wait five minutes and try model tuning again.
+Error: Permission 'aiplatform.metadataStores.get' denied on resource '...europe-west4/metadataStores/default'.
+Make sure that the Compute Engine API is enabled and that the default Compute Engine service account (PROJECT_ID-compute@developer.gserviceaccount.com) is granted the aiplatform.admin and the storage.objectAdmin roles.
+To grant the aiplatform.admin and the storage.objectAdmin roles to the Compute Engine service account, do the following:
+In the Google Cloud console, activate Cloud Shell.
+Activate Cloud Shell
+At the bottom of the Google Cloud console, a Cloud Shell session starts and displays a command-line prompt. Cloud Shell is a shell environment with the Google Cloud CLI already installed and with values already set for your current project. It can take a few seconds for the session to initialize.
+If you prefer to use a terminal on your machine, install and configure the Google Cloud CLI.
+Attach the aiplatform.admin role to your Compute Engine service account using the gcloud projects add-iam-policy-binding command:
+Replace PROJECT_ID with your Google Cloud project ID.
+gcloud projects add-iam-policy-binding 
+PROJECT_ID --member serviceAccount:
+PROJECT_ID-compute@developer.gserviceaccount.com --role roles/aiplatform.admin
+Attach the storage.objectAdmin role to your Compute Engine service account using the gcloud projects add-iam-policy-binding command:
+Replace PROJECT_ID with your Google Cloud project ID.
+gcloud projects add-iam-policy-binding 
+PROJECT_ID --member serviceAccount:
+PROJECT_ID-compute@developer.gserviceaccount.com  --role roles/storage.objectAdmin
+Error: Vertex AI Service Agent service-{project-number}@gcp-sa-aiplatform.iam.gserviceaccount.com does not have permission to access Artifact Registry repository projects/vertex-ai-restricted/locations/us/repositories/llm.
+This permission error is due to a propagation delay. A subsequent retry should resolve this error.
+What's next
+Learn how to evaluate a tuned model.
+Learn how to tune a foundation model using RLHF tuning.
+Learn how to tune a code model.
+Was this helpful?
+Send feedback

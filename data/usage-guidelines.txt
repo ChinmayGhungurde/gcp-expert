@@ -1,0 +1,23 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Usage guidelines
+bookmark_border
+Read the following product attributes and legal considerations before you use Imagen on Vertex AI.
+Image and text filters and outputs: Images (generated or uploaded) through Imagen on Vertex AI are assessed against safety filters. Imagen aims to filter out (generated or uploaded) that violate our acceptable use policy (AUP) or additional Generative AI product restrictions. In addition, our generative imagery models are intended to generate original content and not replicate existing content. We've designed our systems to limit the chances of this occurring, and we will continue to improve how these systems function. Like all cloud service providers, Google maintains an Acceptable Use Policy that prohibits customers from using our services in ways that infringe third-party IP rights.
+People generation now supported: This feature enables the generation of photorealistic, synthetic faces, but does not support the generation of celebrities. Please be aware that in some cases, synthetic faces may look similar to individuals. In the event you think this feature is outputting bad outputs, please report this using the abuse reporting mechanism mentioned at Overview of Generative AI on Vertex AI.
+Generation of children: This feature enables selected allowlisted users to generate photorealistic, synthetic faces of children. To request the ability to use this feature, contact your Google Cloud account team.
+Configurable safety filter thresholds: Google blocks model responses that exceed the designated confidence scores for certain safety attributes. To request the ability to modify a safety threshold, contact your Google Cloud account team.
+Text addition not supported: Imagen does not support adding text to images (uploaded or generated) using a text prompt.
+Report suspected abuse: You can report suspected abuse of Imagen on Vertex AI or any generated output that contains inappropriate material or inaccurate information using the Report suspected abuse on Google Cloud form.
+Trusted Tester Program opt-out: If you previously opted in to permit Google to use your data to improve pre-GA AI/ML services as part of the Trusted Tester Program terms, you can opt out using the Trusted Tester Program - Opt Out Request form.
+Previous
+arrow_back
+Use visual captioning and VQA quickstart (Console)
+Next
+Responsible AI for Imagen
+arrow_forward
+Was this helpful?
+Send feedback

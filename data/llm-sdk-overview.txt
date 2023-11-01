@@ -1,0 +1,38 @@
+Vertex AI
+Documentation
+Reference
+Was this helpful?
+Send feedback
+Introduction to language model classes in the Vertex AI SDK
+On this page
+Language model class overview
+Load a foundation model
+What's next
+You can use the Vertex AI SDK for Python to programmatically create solutions using Vertex AI language foundation models. The Vertex AI SDK includes classes for text generation, text chat, text embedding, code generation, code chat, and code completion models.
+To learn how to install the Vertex AI SDK for Python, see Install the Vertex AI SDK for Python. To view the language model section in the Vertex AI SDK reference guide, see Package language models.
+The language models represented in the Vertex AI SDK are in addition to classes that help you create Vertex AI solutions that aren't related to generative AI and language models. For information about how to use the Vertex AI SDK to automate data ingestion, train models, and get predictions on Vertex AI, see Introduction to the Vertex AI SDK for Python.
+Language model class overview
+The Vertex AI SDK includes language model classes that help you accomplish common generative AI tasks. The following are model classes used to work with the foundation models available in Vertex AI:
+ChatModel — Use this class to work with the text chat foundation model. The name of the current stable version of this model is chat-bison@001.
+CodeChatModel — Use this class to work with the code chat foundation model. The name of the current stable version of this model is codechat-bison@001.
+CodeGenerationModel — Use this class to work with the code generation and the code completion foundation models. The name of the current stable version of the code generation model is code-bison@001 and the name of the current stable version of the code completion model is code-gecko@001.
+TextEmbeddingModel — Use this class to work with the text embedding foundation model. The name of the current stable version of the code generation model is textembedding-gecko@001.
+TextGenerationModel — Use this class to work with the text generation foundation model. The name of the current stable version of the text generation model is text-bison@001.
+Load a foundation model
+To begin using the Vertex AI SDK to work with a foundation model, you load an instance of the model. To load a model, use the from_pretrained method on a language model class. Foundation models are also known as pretrained models. When you call from_pretrained, specify a stable version or the latest version of the model you want to work with. For more information about stable and latest versions, and how they're specified in code, see Model versions and lifecycle.
+The following sample lines of Python code show you how to load a foundation model.
+Get version 001 of the stable version of the code chat pretrained model:
+from vertexai.language_models import ChatModel
+
+my_chat_model = ChatModel.from_pretrained("chat-bison@001")
+Get the latest version of the text generation model:
+from vertexai.language_models import TextGenerationModel
+
+my_text_generation_model = TextGenerationModel.from_pretrained("text-bison")
+After you use the Vertex AI SDK to load a model, you can use the model to create generative AI solutions. Some of the tasks you can do with your loaded model are generate text and code content, stream content, create a text or code chat session, tune the model, get embeddings, and create batch predictions. Which specific tasks you can do depends on the type of model you loaded.
+What's next
+Learn how to use text model classes and the Vertex AI SDK.
+Learn about use code model classes and the Vertex AI SDK.
+Learn about use the Vertex AI SDK to tune foundation models.
+Was this helpful?
+Send feedback

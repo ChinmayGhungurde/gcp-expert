@@ -1,0 +1,60 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Learn about LLMs, PaLM models, and Vertex AI
+On this page
+Get started
+Get started with the Vertex AI PaLM API & Vertex AI SDK for Python
+Get started with Vertex AI Generative AI Studio
+Best practices for prompt design
+LangChain 🦜️🔗
+LangChain and Vertex AI PaLM API
+Get text summarization from large documents using LangChain
+Answer questions from large documents with LangChain
+Large language models (LLMs) are deep learning models trained on massive amounts of text data. LLMs can translate language, summarize text, and complement search engines and recommendation systems. PaLM 2 is Google's next generation LLM that builds on Google's legacy of research in machine learning and responsible AI.
+PaLM 2 models excel at advanced reasoning tasks, classification and question answering, translation, and natural language generation. Its large size enables it to learn complex patterns and relationships in language and generate high-quality text for various applications. This is why the PaLM 2 models are referred to as foundational models.
+To use PaLM 2 models in Vertex AI, Google developed Vertex AI PaLM API. with the Vertex AI PaLM API, you can test, customize, and deploy instances of the models for your own applications, and tune them using your own specific use-cases.
+To see more learning resources, browse the Generative AI GitHub repo. Google data scientists, developers, and developer advocates manage this content.
+Get started
+Here are some notebooks, tutorials, and other examples to help you get started. Vertex AI offers Google Cloud console tutorials and Jupyter notebook tutorials that use the Vertex AI SDK for Python. You can open a notebook tutorial in Colab or download the notebook to your preferred environment.
+Get started with the Vertex AI PaLM API & Vertex AI SDK for Python
+Learn how to use the PaLM API with the Vertex AI SDK for Python. By the end of the notebook, you should understand various nuances of generative model parameters like temperature, top_k, top_p, and how each parameter affects your output results.
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+Get started with Vertex AI Generative AI Studio
+Use Generative AI Studio through the Google Cloud console without the need for the API or the Vertex AI SDK for Python.
+View on GitHub
+Best practices for prompt design
+Learn how to design prompts to improve the quality of your responses from the model. This tutorial covers the essentials of prompt engineering, including some best practices.
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+LangChain 🦜️🔗
+LangChain is a framework for developing applications powered by LLMs like the PaLM models. Use LangChain to bring external data, such as your files, other applications, and API data, to your LLMs.
+To learn more about LangChain and how it works with Vertex AI, see the official LangChain and Vertex AI documentation.
+LangChain and Vertex AI PaLM API
+This tutorial provides an introduction to understanding LangChain components and some common use cases for working with LangChain and the Vertex AI PaLM API. Some examples and demos in this tutorial include:
+How LangChain and the Vertex AI PaLM API work
+How to summarize large texts
+How to build a retrieval-based question/answering model from PDFs
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+Get text summarization from large documents using LangChain
+Text summarization is a natural language processing (NLP) task that creates a concise and informative summary of a longer text. You can use LLMs to create summaries of news articles, research papers, technical documents, and other types of text.
+In this notebook, you use LangChain to apply summarization strategies. The notebook covers several examples of how to summarize large documents.
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+Answer questions from large documents with LangChain
+This notebook uses LangChain with Vertex AI PaLM API to build a question-answering (Q&A) system that extracts information from large documents.
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+Answer questions from documents with LangChain and Vector Search
+This notebook shows how to implement a question & answering (QA) system that improves an LLM response. You learn how to augment its knowledge with external data sources such as documents and websites. This notebook uses Vector Search, LangChain, and Vertex AI PaLM API for text and embedding creation, .
+Jupyter notebook: You can run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+What's next
+Explore more resources in the Generative AI GitHub repo.
+See other Vertex AI notebook tutorials in the Tutorials overview.
+Was this helpful?
+Send feedback

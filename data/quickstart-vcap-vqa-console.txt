@@ -1,0 +1,68 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+On this page
+Before you begin
+Get the sample image
+Generate image descriptions with visual captioning
+Generate answers to questions with VQA
+Clean up
+Delete the project
+What's next
+Use Imagen on Vertex AI's visual captioning and Visual Question Answering (VQA) to get image information (Console)
+bookmark_border
+Learn how to use Imagen on Vertex AI's visual captioning and Visual Question Answering (VQA) features to get text information about an image. This quickstart shows you how to use visual captioning and VQA in the Google Cloud console.
+Image source: Worachat Sodsri on Unsplash (image cropped, shown in Google Cloud console).
+Before you begin
+Sign in to your Google Cloud account. If you're new to Google Cloud, create an account to evaluate how our products perform in real-world scenarios. New customers also get $300 in free credits to run, test, and deploy workloads.
+In the Google Cloud console, on the project selector page, select or create a Google Cloud project.
+Note: If you don't plan to keep the resources that you create in this procedure, create a project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
+Go to project selector
+Make sure that billing is enabled for your Google Cloud project.
+Enable the Vertex AI API.
+Enable the API
+Get the sample image
+After you have set up your environment, you can get a sample image and use visual captioning and Visual Question Answering to get information about the image.
+Image source: Worachat Sodsri on Unsplash (image cropped).
+To get the sample image, either download the image directly from Cloud Storage, or use the following command to save it in the current directory:
+curl -O https://storage.googleapis.com/cloud-samples-data/generative-ai/image/vcap-vqa-quickstart_fish.jpg
+Generate image descriptions with visual captioning
+After you get the sample image, you can send the visual captioning request to get a text descriptions of the image.
+Console
+In the Google Cloud console, open the Generative AI Studio > Vision tab in the Vertex AI dashboard.
+Go to the Generative AI Studio tab
+In the lower menu, click subtitlesCaption.
+Click Upload image and select the local image to caption.
+In the Parameters panel, set the following:
+Number of captions: Select 2.
+Language: If not already selected, choose English (en).
+Click play_arrowGenerate captions.
+Generate answers to questions with VQA
+Finally, you can use the same image to ask a question about the image and get an answer using the VQA feature.
+Console
+In the Google Cloud console, open the Generative AI Studio > Vision tab in the Vertex AI dashboard.
+Go to the Generative AI Studio tab
+In the lower menu, click forumVisual Q&A.
+Click Upload image and select the local image.
+In the Parameters panel, select 2 as the Number of answers.
+In the prompt (Ask a question here) field, enter the following text:
+What color is the left fish?
+Click play_arrowGenerate.
+Congratulations! You've just used Imagen's visual captioning and VQA features to get information about an image.
+Clean up
+To avoid incurring charges to your Google Cloud account for the resources used on this page, follow these steps.
+Delete the project
+What's next
+Read usage guidelines for Imagen on Vertex AI.
+Explore pretrained models in Model Garden.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Previous
+arrow_back
+Imagen on Vertex AI overview
+Next
+Usage guidelines
+arrow_forward
+Was this helpful?
+Send feedback

@@ -1,0 +1,156 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Use text models and the Vertex AI SDK
+bookmark_border
+On this page
+Generate text
+Generate text chat
+Stream text model responses
+Stream text generation
+Stream text chat
+Generate text embeddings
+What's next
+There are three types of generative AI text foundation models in Vertex AI. There's a text generation model, a text chat model, and a text embedding model. Text chat and text generation models generate text. The text embedding model generates a vector representation of text that you use to find similar items.
+The text generation model name is text-bison and its class in the Vertex AI SDK is TextGenerationModel.
+The text chat model name is chat-bison and its class in the Vertex AI SDK is ChatModel.
+The text embedding model name is textembedding-gecko and its class in the Vertex AI SDK is TextEmbeddingModel.
+The following topics show you how to use these classes and the Vertex AI SDK to perform some common generative AI tasks.
+Generate text
+You can use the Vertex AI SDK TextGenerationModel class to generate text. The following sample code loads a stable version
+version of the text-bison model, then uses the predict method to generate a recipe. This code sample doesn't include optional parameters. The predict method returns a TextGenerationResponse object that has text, safety_attributes and is_blocked attributes. To learn more about generating text with the text generation foundation model, see Design text prompts and Test text prompts.
+from vertexai.language_models import TextGenerationModel
+
+model = TextGenerationModel.from_pretrained("text-bison@001")
+
+print(model.predict(
+    "What is the best recipe for banana bread? Recipe:",
+    # The following are optional parameters:
+    #max_output_tokens=128,
+    #temperature=0,
+    #top_p=1,
+    #top_k=5,
+))
+The beginning of the output might be similar to the following:
+Ingredients:
+
+* 3 very ripe bananas, mashed
+* 1/2 cup (1 stick) unsalted butter, at room temperature
+* 3/4 cup granulated sugar
+* 3/4 cup packed light brown sugar
+* 2 large eggs
+* 2 teaspoons vanilla extract
+* 1 1/2 cups all-purpose flour
+* 1 teaspoon baking soda
+* 1/2 teaspoon salt
+* 1/2 cup chopped walnuts or pecans (optional)
+
+Instructions:
+
+1. Preheat oven to 350 degrees F
+   ...
+Generate text chat
+The following sample code shows you how to load a stable version version of the text chat foundation model. Next, it uses the start_chat method to begin a chat, and the send_message method to send chat messages. To learn more about using the text chat foundation model, see Design chat prompts and Test chat prompts.
+from vertexai.language_models import ChatModel, InputOutputTextPair
+
+chat_model = ChatModel.from_pretrained("chat-bison@001")
+
+chat = chat_model.start_chat(
+    # Optional parameters, such ase top_p, top_k, temperature, max_output_tokens,
+    # aren't specified in this example
+    context="My name is Ned. You are my personal assistant. My favorite movies are Lord of the Rings and Hobbit.",
+    examples=[
+        InputOutputTextPair(
+            input_text="Who do you work for?",
+            output_text="I work for Ned.",
+        ),
+        InputOutputTextPair(
+            input_text="What do I like?",
+            output_text="Ned likes watching movies.",
+        ),
+    ],
+)
+
+print(chat.send_message("Are my favorite movies based on a book series?"))
+The send_message output might be similar to the following:
+Yes, your favorite movies are based on a book series.
+The following send_message sends a second message using the same text chat session.
+print(chat.send_message("When where these books published?"))
+The output for this second send_message might be similar to the following:
+The books were published in 1954 and 1955.
+Stream text model responses
+You might want to receive responses from the text generation and text chat models as they're generated. Receiving responses from a foundation model as the responses are generated is known as streaming. When text generation and text chat model responses are streamed, the output tokens are sent when they're generated. To stream text generation, use the TextGenerationModel.predict_streaming method. To stream text chat, use the ChatModel.predict_streaming method. To learn more about streaming from foundation models, see Stream responses from Generative AI models.
+Stream text generation
+The following sample code streams text that counts to 100 as the text is generated. It also outputs the time before and the time after from_pretrained is called to demonstrate how long it takes to stream the output.
+import datetime
+from vertexai.language_models import TextGenerationModel
+
+text_generation_model = TextGenerationModel.from_pretrained("text-bison@001")
+
+print("Start: ", datetime.datetime.now())
+for response in text_generation_model.predict_streaming(
+    prompt="Count to 100",
+    max_output_tokens=1000,
+    # The following parameters are optional
+    #temperature=0,
+    #top_p=1,
+    #top_k=5,
+):
+    print(datetime.datetime.now(), "|", response)
+print("End: ", datetime.datetime.now())
+The response might be similar to the following:
+Start:  YYYY-MM-DD 06:31:07.825599
+YYYY-MM-DD 06:31:08.933534 | 1. 2. 3. 4. 5. 6. 7. 8. 9. 10. 11. 12. 13. 14. 15. 16. 17. 18. 1
+YYYY-MM-DD 06:31:09.335374 | 9. 20. 21. 22. 23. 24. 25. 26. 27. 28. 29. 30. 31. 32. 33. 34. 3
+YYYY-MM-DD 06:31:09.738079 | 5. 36. 37. 38. 39. 40. 41. 42. 43. 44. 45. 46. 47. 48. 49. 50. 5
+YYYY-MM-DD 06:31:10.142726 | 1. 52. 53. 54. 55. 56. 57. 58. 59. 60. 61. 62. 63. 64. 65. 66. 6
+YYYY-MM-DD 06:31:10.535045 | 7. 68. 69. 70. 71. 72. 73. 74. 75. 76. 77. 78. 79. 80. 81. 82. 8
+YYYY-MM-DD 06:31:10.937847 | 3. 84. 85. 86. 87. 88. 89. 90. 91. 92. 93. 94. 95. 96. 97. 98. 9
+YYYY-MM-DD 06:31:10.996782 | 9. 100.
+End:  YYYY-MM-DD 06:31:10.998498
+Stream text chat
+The following sample code streams text chat that is in response to a chatbot request to count to 99. The code sample also outputs the time before and the time after from_pretrained is called to demonstrate how long it takes to stream the output.
+import datetime
+from vertexai.language_models import ChatModel
+
+chat_model = ChatModel.from_pretrained("chat-bison@001")
+chat = chat_model.start_chat()
+
+print("Start: ", datetime.datetime.now())
+for response in chat.send_message_streaming(
+    message="Hello. How are you today? Please count to 99",
+    max_output_tokens=1024,
+):
+    print(datetime.datetime.now(), "|", response)
+print("End: ", datetime.datetime.now())
+The response might be similar to the following:
+Start:  YYYY-MM-DD 06:31:19.808735
+YYYY-MM-DD 06:31:20.957465 | Hello, I am doing well today. Thank you for asking. 1, 2, 3, 4,
+YYYY-MM-DD 06:31:21.312577 | 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 2
+YYYY-MM-DD 06:31:DD.709306 | 2, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 3
+YYYY-MM-DD 06:31:22.132016 | 8, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 5
+YYYY-MM-DD 06:31:22.517211 | 4, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 7
+YYYY-MM-DD 06:31:22.911003 | 0, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 8
+YYYY-MM-DD 06:31:23.257773 | 6, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99.
+End:  YYYY-MM-DD 06:31:23.265454
+Generate text embeddings
+You can use the TextEmbeddingModel class in the Vertex AI SDK to calculate text embeddings. The following Python code sample uses the TextEmbeddingModel.get_embeddings method to generate text embeddings using a prompt. In this example, get_embeddings returns one embeddings object that contains one embedding object. The example prints the length and statistics of the returned vector. To learn more about text embeddings and the text embedding foundation model, see Get text embeddings.
+from vertexai.language_models import TextEmbeddingModel
+
+model = TextEmbeddingModel.from_pretrained("textembedding_gecko_current")
+embeddings = model.get_embeddings(["What is life?"])
+for embedding in embeddings:
+    vector = embedding.values
+    print(len(vector))
+    print(embedding.statistics)
+The output is similar to the following:
+768
+TextEmbeddingStatistics(token_count=4.0, truncated=False)
+What's next
+Learn about use code model classes and the Vertex AI SDK.
+Learn how to use the Vertex AI SDK to tune foundation models.
+Learn about Vertex AI SDK classes not related to generative AI.
+Was this helpful?
+Send feedback

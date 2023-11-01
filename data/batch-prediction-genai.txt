@@ -1,0 +1,189 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Get batch text predictions
+bookmark_border
+On this page
+Text models that support batch predictions
+Prepare your inputs
+JSONL example
+BigQuery example
+Request a batch response
+Retrieve batch output
+What's next
+Batch predictions are a way to efficiently send large numbers of non-latency sensitive text prompts requests. Different from online prediction, where you are limited to one input request at a time, you can send a large number of LLM requests in a single batch request. Similar to how batch prediction is done for tabular data in Vertex AI, you determine your output location, add your input prompts, and your responses asynchronously populate in your output location.
+After you submit a batch request for a text model and review its results, you can tweak the model through model tuning. After tuning, you can submit your updated model for batch generations as usual. To learn more about tuning models, see Tune foundation models.
+Text models that support batch predictions
+text-bison
+Prepare your inputs
+The input for batch requests specifies the items to send to your model for a batch generation. When using text classification on models you can use a JSON Lines file or a BigQuery table to specify a list of inputs. You store your BigQuery table in BigQuery and your JSON Lines file in Cloud Storage.
+Batch requests for text models only accept BigQuery storage sources and Google Cloud Storage. Requests can include up to 30,000 prompts.
+To learn more about formatting, see:
+JSON Line
+BigQuery
+JSONL example
+JSONL input format
+{"prompt":"Give a short description of a machine learning model:"}
+{"prompt":"Best recipe for banana bread:"}
+JSONL output
+{"instance":{"prompt":"Give..."},"predictions": [{"content":"A machine","safetyAttributes":{...}}],"status":""}
+{"instance":{"prompt":"Best..."},"predictions": [{"content":"Sure", "safetyAttributes":{...}}],"status":""}
+BigQuery example
+BigQuery input format
+This example shows a single column BigQuery table.
+prompt
+"Give a short description of a machine learning model:"
+"Best recipe for banana bread:"
+BigQuery output
+prompt predictions status
+"Give a short description of a machine learning model:"
+'[{
+   "content": "A machine learning model is a
+               statistical method",
+   "safetyAttributes": {
+     "blocked": false,
+     "scores": [
+       0.10000000149011612
+     ],
+     "categories": [
+       "Violent"
+     ]
+   }
+ }]'
+ 
+"Best recipe for banana bread:"
+'[{"content": "Sure, here is a recipe for banana
+               bread:\n\nIngredients:\n\n*",
+   "safetyAttributes": {
+     "scores": [
+       0.10000000149011612
+     ],
+     "blocked": false,
+     "categories": [
+       "Violent"
+     ]
+   }
+}]'
+Request a batch response
+Depending on the number of input items that you've submitted, a batch generation task can take some time to complete.
+REST
+Vertex AI SDK for Python
+To test a text prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: The name of your Google Cloud project.
+BP_JOB_NAME: The job name.
+MODEL_PARAM: A map of model parameters. Some Acceptable parameters include: maxOutputTokens, topK, topP, and temperature.
+INPUT_URI: The input source URI. This is either a BigQuery table URI or a JSONL file URI in Cloud Storage.
+OUTPUT_URI: Output target URI.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs
+Request JSON body:
+{
+    "name": "
+BP_JOB_NAME",
+    "displayName": "
+BP_JOB_NAME",
+    "model": "
+publishers/google/models/text-bison",
+    "model_parameters": "
+MODEL_PARAM"
+    "inputConfig": {
+      "instancesFormat":"bigquery",
+      "bigquerySource":{
+        "inputUri" : "
+INPUT_URI"
+      }
+    },
+    "outputConfig": {
+      "predictionsFormat":"bigquery",
+      "bigqueryDestination":{
+        "outputUri": "
+OUTPUT_URI"
+        }
+    }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following:
+{
+  "name": "projects/{PROJECT_ID}/locations/us-central1/batchPredictionJobs/{BATCH_JOB_ID}",
+  "displayName": "BP_sample_publisher_BQ_20230712_134650",
+  "model": "projects/{PROJECT_ID}/locations/us-central1/models/text-bison",
+  "inputConfig": {
+    "instancesFormat": "bigquery",
+    "bigquerySource": {
+      "inputUri": "bq://sample.text_input"
+    }
+  },
+  "modelParameters": {},
+  "outputConfig": {
+    "predictionsFormat": "bigquery",
+    "bigqueryDestination": {
+      "outputUri": "bq://sample.llm_dataset.embedding_out_BP_sample_publisher_BQ_20230712_134650"
+    }
+  },
+  "state": "JOB_STATE_PENDING",
+  "createTime": "2023-07-12T20:46:52.148717Z",
+  "updateTime": "2023-07-12T20:46:52.148717Z",
+  "labels": {
+    "owner": "sample_owner",
+    "product": "llm"
+  },
+  "modelVersionId": "1",
+  "modelMonitoringStatus": {}
+}
+The response includes a unique identifier for the batch job. You can poll for the status of the batch job using the BATCH_JOB_ID until the job state is JOB_STATE_SUCCEEDED. For example:
+curl \
+  -X GET \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs/
+BATCH_JOB_ID
+Note: The concurrent job quota is 1 due to scarce backend resources. Custom Service account, live progress, CMEK, and VPCSC reports are not supported at this time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Retrieve batch output
+When a batch prediction task is complete, the output is stored in the Cloud Storage bucket or BigQuery table that you specified in your request.
+What's next
+Learn how to test text prompts.
+Learn other task-specific prompt design strategies for text:
+Summarization prompts
+Extraction prompts
+Learn how to tune a model.
+Was this helpful?
+Send feedback

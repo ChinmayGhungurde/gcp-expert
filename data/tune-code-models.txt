@@ -1,0 +1,435 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Tune code models
+bookmark_border
+On this page
+Scenarios to use code model tuning
+Tuning and evaluation metrics
+Prepare your code model tuning dataset
+Dataset format for tuning a code model
+Maintain consistency with production data
+Preview
+Supervised tuning features for code-bison and codechat-bison are Preview offerings, subject to the Pre-GA Offerings Terms of the GCP Service Specific Terms. Pre-GA products and features may have limited support, and changes to pre-GA products and features may not be compatible with other pre-GA versions. For more information, see the launch stage descriptions. Further, by using the PaLM API on Vertex AI, you agree to the Generative AI Preview terms and conditions (Preview Terms).
+For these features, you can process personal data as outlined in the Cloud Data Processing Addendum, subject to applicable restrictions and obligations in the Agreement (as defined in the Preview Terms).
+Code models can be tuned by using supervised tuning. Supervised tuning uses labeled examples that demonstrate the type of output you'd like from your code generation or code chat model during inference. Code models don't support tuning by using Reinforcement learning from human feedback (RLHF) tuning.
+Scenarios to use code model tuning
+Tuning is required when you want a model to learn something niche or specific that deviates from general language and code patterns. The following are examples of what you can teach the code-bison and codechat-bison models:
+How to generate code for custom libraries. By training a code model with labeled samples of a custom library, you can generate or chat about code that is specific to that custom library.
+How to use your code base. By training a model with labeled samples of your code base, you can generate code or chat about code that uses unique qualities in your code base.
+How to generate code using variants of a programming language. By training a code model with labeled samples of a language variant, you can generate or chat about code that uses that language variant's particular conventions and standards.
+These scenarios include code requirements that are difficult to capture through prompt instructions alone. The following are some examples:
+Code generation
+Code chat
+This sample prompt and response helps tune code-bison to work with a specific dataset.
+Prompt:
+Python to retrieve the labels of a dataset for a given dataset ID in BigQuery
+    
+Response:
+Here is a Python code sample to retrieve the labels of a dataset for a given dataset ID in BigQuery.\n\n<code translate="no" dir="ltr">python\n\n    from google.cloud import bigquery\n\n    # Construct a BigQuery client object.\n    client = bigquery.Client()\n\n    # TODO(developer): Set dataset_id to the ID of the dataset to fetch.\n    # dataset_id = \"your-project.your_dataset\"\n\n    dataset = client.get_dataset(dataset_id)  # Make an API request.\n\n    # View dataset labels.\n    print(\"Dataset ID: {}\".format(dataset_id))\n    print(\"Labels:\")\n    if dataset.labels:\n        for label, value in dataset.labels.items():\n            print(\"\\t{}: {}\".format(label, value))\n    else:\n        print(\"\\tDataset has no labels defined.\")\n</code>
+    
+This sample prompt and response helps train code-bison create a product using Python.
+Prompt:
+How to create a product in Python with the Cloud Vision API?
+    
+Response:
+Use this Python code sample to learn how to create a product with the Cloud Vision API:\n\n<code translate="no" dir="ltr">python\n\r\n\r\n\r\n\r\n\r\nfrom google.cloud import vision\r\nfrom google.protobuf import field_mask_pb2 as field_mask\r\n\r\ndef create_product(\r\n        project_id, location, product_id, product_display_name,\r\n        product_category):\r\n    \"\"\"Create one product.\r\n    Args:\r\n        project_id: Id of the project.\r\n        location: A compute region name.\r\n        product_id: Id of the product.\r\n        product_display_name: Display name of the product.\r\n        product_category: Category of the product.\r\n    \"\"\"\r\n    client = vision.ProductSearchClient()\r\n\r\n    # A resource that represents Google Cloud Platform location.\r\n    location_path = f\"projects/{project_id}/locations/{location}\"\r\n\r\n    # Create a product with the product specification in the region.\r\n    # Set product display name and product category.\r\n    product = vision.Product(\r\n        display_name=product_display_name,\r\n        product_category=product_category)\r\n\r\n    # The response is the product with the `name` field populated.\r\n    response = client.create_product(\r\n        parent=location_path,\r\n        product=product,\r\n        product_id=product_id)\r\n\r\n    # Display the product information.\r\n    print('Product name: {}'.format(response.name))\r\n</code>
+    
+Important: Currently, model tuning might improve the model's general knowledge. When tuning a model on a task, if you asked the tuned model a question without including a context, the tuned model might not remember the contexts it was tuned on. We recommend including a context for relevant tasks.
+Tuning and evaluation metrics
+Getting TensorBoard metrics visualization is available for code-bison only.
+You can configure a model tuning job to collect and report model tuning and model evaluation metrics, which can then be visualized by using Vertex AI TensorBoard. To connect your tuning job to Vertex AI TensorBoard, specify a Vertex AI TensorBoard instance ID and an evaluation dataset.
+The supported metrics are as follows:
+Model tuning metrics:
+/train_total_loss: Loss for the tuning dataset at a training step.
+/train_fraction_of_correct_next_step_preds: The token accuracy at a training step. A single prediction consists of a sequence of tokens. This metric measures the accuracy of the predicted tokens when compared to the ground truth in the tuning dataset.
+/train_num_predictions: Number of predicted tokens at a training step.
+Model evaluation metrics:
+/eval_total_loss: Loss for the evaluation dataset at an evaluation step.
+/eval_fraction_of_correct_next_step_preds: The token accuracy at an evaluation step. A single prediction consists of a sequence of tokens. This metric measures the accuracy of the predicted tokens when compared to the ground truth in the evaluation dataset.
+/eval_num_predictions: Number of predicted tokens at an evaluation step.
+The metrics visualizations are available after the model tuning job completes. If you specify only a Vertex AI TensorBoard instance ID and not an evaluation dataset when you create the tuning job, only the visualizations for the tuning metrics are available.
+Prepare your code model tuning dataset
+The dataset used to tune a code model includes examples that align with the task that you want the model to perform. Your dataset must include a minimum of 10 examples, but we recommend at least 500 examples for good results. The more examples you give, the better the results.
+Dataset format for tuning a code model
+The tuning dataset for a code generation model and a code chat model must be in JSON Lines (JSONL) format. The following includes details about the dataset format and dataset examples for each model:
+Code generation
+Code chat
+Your code generation model tuning dataset must be in JSON Lines (JSONL) format where each line contains a single tuning example. Each example is composed of an input_text field that contains the prompt to the model and an output_text field that contains an example response that the tuned model is expected to produce.
+The maximum number of examples that a dataset for a text generation model can contain is 10,000.
+Examples of a code generation model tuning dataset
+This topic shows you two examples of code generation model tuning datasets. The following is the first example of a code generation tuning dataset:
+{"input_text": "How to create a product in Python with the Cloud Vision API?", "output_text": "Use this Python code sample to learn how to create a product with the Cloud Vision API:\n\n```python\n\r\n\r\n\r\n\r\n\r\nfrom google.cloud import vision\r\nfrom google.protobuf import field_mask_pb2 as field_mask\r\n\r\ndef create_product(\r\n project_id, location, product_id, product_display_name,\r\n product_category):\r\n \"\"\"Create one product.\r\n Args:\r\n project_id: Id of the project.\r\n location: A compute region name.\r\n product_id: Id of the product.\r\n product_display_name: Display name of the product.\r\n product_category: Category of the product.\r\n \"\"\"\r\n client = vision.ProductSearchClient()\r\n\r\n # A resource that represents Google Cloud Platform location.\r\n location_path = f\"projects/{project_id}/locations/{location}\"\r\n\r\n # Create a product with the product specification in the region.\r\n # Set product display name and product category.\r\n product = vision.Product(\r\n display_name=product_display_name,\r\n product_category=product_category)\r\n\r\n # The response is the product with the `name` field populated.\r\n response = client.create_product(\r\n parent=location_path,\r\n product=product,\r\n product_id=product_id)\r\n\r\n # Display the product information.\r\n print('Product name: {}'.format(response.name))\r\n```"}
+The following is the second example of a code generation tuning dataset:
+{"input_text": "python to retrieve the labels of a dataset for a given dataset ID in BigQuery", "output_text": "Here is a Python code sample to retrieve the labels of a dataset for a given dataset ID in BigQuery.\n\n```python\n\n from google.cloud import bigquery\n\n # Construct a BigQuery client object.\n client = bigquery.Client()\n\n # TODO(developer): Set dataset_id to the ID of the dataset to fetch.\n # dataset_id = \"your-project.your_dataset\"\n\n dataset = client.get_dataset(dataset_id) # Make an API request.\n\n # View dataset labels.\n print(\"Dataset ID: {}\".format(dataset_id))\n print(\"Labels:\")\n if dataset.labels:\n for label, value in dataset.labels.items():\n print(\"\\t{}: {}\".format(label, value))\n else:\n print(\"\\tDataset has no labels defined.\")\n```"}
+Maintain consistency with production data
+The examples in your datasets should match your expected production traffic. If your dataset contains specific formatting, keywords, instructions, or information, the production data should be formatted in the same way and contain the same instructions.
+For example, if the examples in your dataset include a "question:" and a "context:", production traffic should also be formatted to include a "question:" and a "context:" in the same order as it appears in the dataset examples. If you exclude the context, the model will not recognize the pattern, even if the exact question was in an example in the dataset.
+Include instructions in examples
+For tasks such as code generation, you can create a dataset of examples that don't contain instructions. However, excluding instructions from the examples in the dataset leads to worse performance after tuning than including instructions, especially for smaller datasets.
+Excludes instructions:
+{"input_text": "Calculate the sum of a list of integers.",
+"output_text": ```python\nnums = [1, 2, 3]\ntotal_sum = sum(nums)\n```}
+Includes instructions:
+{"input_text": "Write the code in Python: calculate the sum of a list of integers",
+"output_text": ```python\nnums = [1, 2, 3]\ntotal_sum = sum(nums)\n```}
+Upload tuning datasets to Cloud Storage
+To run a tuning job, you need to upload one or more datasets to a Cloud Storage bucket. You can either create a new Cloud Storage bucket or use an existing one to store dataset files. The region of the bucket doesn't matter, but we recommend that you use a bucket that's in the same Google Cloud project where you plan to tune you model.
+After your bucket is ready, upload your dataset file to the bucket.
+Create a code model tuning job
+You can create a supervised tuning job by using the Google Cloud console, API, or the Vertex AI SDK for Python. For guidance on model tuning configurations, see the Recommended configurations.
+Create a code generation model tuning job
+The following shows you how to create a code generation model tuning job using the Google Cloud console or REST API commands.
+REST
+Console
+Vertex AI SDK for Python
+To create a code generation model tuning job, send a POST request by using the pipelineJobs method.
+Before using any of the request data, make the following replacements:
+TUNING_LOCATION: The region where model tuning takes place. Supported regions are:
+us-central1: Uses eight A100 80 GB GPUs. Make sure you have enough quota. Supports CMEK and VPC‑SC.
+europe-west4: Uses 64 cores of the TPU v3 pod. Make sure you have enough quota. CMEK isn't supported, but VPC‑SC is supported.
+PROJECT_ID: Your project ID.
+TUNINGPIPELINE_DISPLAYNAME: A display name for the pipelineJob.
+OUTPUT_DIR: The URI of the bucket to output pipeline artifacts to.
+MODEL_DISPLAYNAME: A display name for the model uploaded (created) by the pipelineJob.
+DATASET_URI: URI of your dataset file.
+EVAL_DATASET_URI: (optional for evaluation) The URI of the JSONL file that contains the evaluation dataset for batch prediction and evaluation. For more information, see Dataset format for tuning a code model. The evaluation dataset requires between ten and 250 examples.
+EVAL_INTERVAL: (optional, default 20) The number of tuning steps between each evaluation. Because the evaluation runs on the entire evaluation dataset, a smaller evaluation interval results in a longer tuning time. For example, if steps is 200 and EVAL_INTERVAL is 100, then you will get only two data points for the evaluation metrics. This parameter requires that the evalutation_data_uri is set.
+ENABLE_EARLY_STOPPING: (optional, default true) A boolean that, if set to true, stops tuning before completing all the tuning steps if model performance, as measured by the accuracy of predicted tokens, does not improve enough between evaluations runs. If false, tuning continues until all the tuning steps are complete. This parameter requires that the evaluation_data_uri is set.
+TENSORBOARD_RESOURCE_ID: (optional) The ID of the Vertex AI TensorBoard instance to create an experiment on after the tuning job completes. The Vertex AI TensorBoard instance needs to be in the same region as the tuning pipeline.
+STEPS: The number of steps to run for model tuning. The default value is 300. The batch size varies by tuning location:
+us-central1 has a batch size of 8.
+europe-west4 has a batch size of 24.
+If there are 240 examples in a training dataset, in europe-west4, it takes 240 / 24 = 10 steps to process the entire dataset once. In us-central1, it takes 240 / 8 = 30 steps to process the entire dataset once.
+LEARNING_RATE_MULTIPLIER : The step size at each iteration. The default value is 1.
+HTTP method and URL:
+POST https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs
+Request JSON body:
+{
+  "displayName": "
+PIPELINEJOB_DISPLAYNAME",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "gs://
+OUTPUT_DIR",
+    "parameterValues": {
+      "project": "
+PROJECT_ID",
+      "model_display_name": "
+MODEL_DISPLAYNAME",
+      "dataset_uri": "gs://
+DATASET_URI",
+      "evaluation_data_uri": "
+EVAL_DATASET_URI",
+      "evaluation_interval": "
+EVAL_INTERVAL",
+      "enable_early_stopping": "
+ENABLE_EARLY_STOPPING",
+      "tensorboard_resource_id": "
+TENSORBOARD_RESOURCE_ID",
+      "location": "us-central1",
+      "large_model_reference": "code-bison@001",
+      "train_steps": 
+STEPS,
+      "learning_rate_multiplier": 
+LEARNING_RATE_MULTIPLIER
+    }
+  }
+  "templateUri": "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v3.0.0"
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following. Note that pipelineSpec has been truncated to save space.
+Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note: All data is processed in the same region as the pipeline job (either us-central1 or europe-west4). After the job is complete, the tuned model uploads to us-central1.
+Example curl command to tune a code generation model
+REGION=
+REGION
+PIPELINE_NAME=
+PIPELINE_NAME
+OUTPUT_DIR=
+OUTPUT_BUCKET_NAME
+PROJECT_ID=
+PROJECT_ID
+TRAIN_DATA_PATH=
+TRAIN_DATA_PATH
+EVAL_DATA_PATH=
+EVAL_DATA_PATH
+TRAIN_STEPS="10"
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json; charset=utf-8" \
+"https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/pipelineJobs?pipelineJobId=tune-large-model-$(date +%Y%m%d%H%M%S)" -d \
+$'{
+  "displayName": "'${PIPELINE_NAME}'",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "'${OUTPUT_DIR}'",
+    "parameterValues": {
+      "project": "'${PROJECT_ID}'",
+      "model_display_name": "'${PIPELINE_NAME}'",
+      "dataset_uri": "'${TRAIN_DATA_PATH}'",
+      "evaluation_data_uri:": "'${EVAL_DATA_PATH}'",
+      "location": "us-central1",
+      "large_model_reference": "code-bison@001",
+      "learning_rate_multiplier": 1,
+      "train_steps": 300
+    }
+  },
+  "templateUri": "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v3.0.0"
+}'
+Create a code chat model tuning job
+The following shows you how to create a code chat model tuning job using the Google Cloud console or REST API commands.
+REST
+Console
+To create a code chat model tuning job, send a POST request by using the pipelineJobs method.
+Before using any of the request data, make the following replacements:
+TUNING_LOCATION: The region where model tuning takes place. Supported regions are:
+us-central1: Uses eight A100 80 GB GPUs. Make sure you have enough quota. Supports CMEK and VPC‑SC.
+europe-west4: Uses 64 cores of the TPU v3 pod. Make sure you have enough quota. CMEK isn't supported, but VPC‑SC is supported.
+.
+PROJECT_ID: Your project ID.
+TUNINGPIPELINE_DISPLAYNAME: A display name for the pipelineJob.
+OUTPUT_DIR: The URI of the bucket to output pipeline artifacs to.
+MODEL_DISPLAYNAME: A display name for the model uploaded (created) by the pipelineJob.
+DATASET_URI: URI of your dataset file.
+LOCATION: The Google Cloud region to upload the tuned model to. Only us-central1 is supported.
+STEPS: The number of steps to run for model tuning. The default value is 300. The batch size varies by tuning location:
+us-central1 has a batch size of 8.
+europe-west4 has a batch size of 24.
+If there are 240 examples in a training dataset, in europe-west4, it takes 240 / 24 = 10 steps to process the entire dataset once. In us-central1, it takes 240 / 8 = 30 steps to process the entire dataset once.
+LEARNING_RATE_MULTIPLIER: The step size at each iteration. The default value is 1.
+HTTP method and URL:
+POST https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs
+Request JSON body:
+{
+  "displayName": "
+PIPELINEJOB_DISPLAYNAME",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "gs://
+OUTPUT_DIR",
+    "parameterValues": {
+      "project": "
+PROJECT_ID",
+      "model_display_name": "
+MODEL_DISPLAYNAME",
+      "dataset_uri": "gs://
+DATASET_URI",
+      "location": "us-central1",
+      "large_model_reference": "codechat-bison@001",
+      "train_steps": 
+STEPS,
+      "learning_rate_multiplier": 
+LEARNING_RATE_MULTIPLIER
+    }
+  },
+  "templateUri": "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-chat-model/v3.0.0"
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://
+TUNING_LOCATION-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/
+TUNING_LOCATION/pipelineJobs"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following.
+Note that pipelineSpec has been truncated to save space.
+Response
+Note: All data is processed in the same region as the pipeline job (either us-central1 or europe-west4). After the job is complete, the tuned model uploads to us-central1.
+Example curl command to tune a code chat model
+REGION=
+REGION
+PIPELINE_NAME=
+PIPELINE_NAME
+OUTPUT_DIR=
+OUTPUT_BUCKET_NAME
+PROJECT_ID=
+PROJECT_ID
+TRAIN_DATA_PATH=
+TRAIN_DATA_PATH
+TRAIN_STEPS="10"
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json; charset=utf-8" \
+"https://${REGION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/pipelineJobs?pipelineJobId=tune-large-model-$(date +%Y%m%d%H%M%S)" -d \
+$'{
+  "displayName": "'${PIPELINE_NAME}'",
+  "runtimeConfig": {
+    "gcsOutputDirectory": "'${OUTPUT_DIR}'",
+    "parameterValues": {
+      "project": "'${PROJECT_ID}'",
+      "model_display_name": "The display name for your model in the UI",
+      "dataset_uri": "'${DATASET_URI}'",
+      "location": "us-central1",
+      "large_model_reference": "chat-bison@001",
+      "train_steps": 300,
+      "learning_rate_multiplier": 1,
+      "encryption_spec_key_name": "projects/myproject/locations/us-central1/keyRings/sample-key/cryptoKeys/sample-key"
+    }
+  },
+  "encryptionSpec": {
+    "kmsKeyName": "projects/myproject/locations/us-central1/keyRings/sample-key/cryptoKeys/sample-key"
+  "templateUri": "https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-chat-model/v3.0.0"
+}'
+Recommended code model tuning configurations
+The following table shows the recommended configurations for tuning a code model by task:
+Task No. of examples in dataset Train steps
+Code generation 500+ 200-1000
+Code chat 500+ 200-1000
+For train steps, you can try more than one value to get the best performance on a particular dataset, for example, 100, 200, 500.
+View a list of tuned models
+You can use the Google Cloud console or the Vertex AI SDK for Python to view a list of your tuned code models in your current project.
+View a list of tuned code models (console)
+To view your tuned code chat and code generation models in the Google Cloud console, go to the Vertex AI Model Registry page.
+Go to Vertex AI Model Registry
+View a list of tuned code generation models (SDK)
+The following sample code uses the Vertex AI SDK for Python to list the tuned code generation models in your current project:
+import vertexai
+from vertexai.preview.language_models import CodeGenerationModel
+
+model = CodeGenerationModel.from_pretrained("code-bison@001").list_tuned_model_names()
+View a list of tuned code chat models (SDK)
+The following sample code uses the Vertex AI SDK for Python to list the tuned code chat models in your current project:
+import vertexai
+from vertexai.preview.language_models import CodeChatModel
+
+model = CodeChatModel.from_pretrained("codechat-bison@001").list_tuned_model_names()
+Load a tuned model
+You can use the Vertex AI SDK for Python to load a tuned code model.
+Load a tuned code generation model
+The following sample code uses the Vertex AI SDK for Python to load a tuned code generation model. In the sample code, replace TUNED_MODEL_NAME with the qualified resource name of your tuned model. This name is in the format projects/PROJECT_ID/locations/LOCATION/models/MODEL_ID. You can find the model ID of your tuned model in Vertex AI Model Registry.
+import vertexai
+from vertexai.preview.language_models import CodeGenerationModel
+
+model = CodeGenerationModel.get_tuned_model(
+TUNED_MODEL_NAME)
+Load a tuned code chat model
+The following sample code uses the Vertex AI SDK for Python to load a tuned code chat model:
+import vertexai
+from vertexai.preview.language_models import CodeChatModel
+
+model = CodeChatModel.get_tuned_model(
+TUNED_MODEL_NAME)
+Quota
+Tuning jobs in us-central1 use eight A100 80 GB GPUs.
+Tuning jobs in europe-west4 use 64 cores of the TPU v3 pod custom model training resource.
+If you don't have enough quota or want to run multiple concurrent tuning jobs in your Google Cloud project, you must request additional quota:
+For us-central1, submit a request for Restricted image training Nvidia A100 80 GB GPUs per region in the us-central1 region in multiples of eight.
+For europe-west4, submit a request for Restricted image training TPU V3 pod cores per region in the europe-west4 region in multiples of 64.
+What's next
+For more models, advanced features, and the ability to transcribe files up to eight hours, see Speech-to-Text.
+Was this helpful?
+Send feedback

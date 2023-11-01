@@ -1,0 +1,186 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Get multimodal embeddings
+bookmark_border
+On this page
+Use cases
+Supported models
+Best practices
+API usage
+API limits
+Before you begin
+Error messages
+Send a text-only embedding request
+The Multimodal embeddings model generates 1408-dimension vectors based on the input you provide, which can include a combination of image data and/or text data. The embedding vectors can then be used for subsequent tasks like image classification or content moderation.
+The image embedding vector and text embedding vector are in the same semantic space with the same dimensionality. Consequently, these vectors can be used interchangeably for use cases like searching image by text, or searching text by image.
+For text-only embedding use cases, we recommend using the Vertex AI text-embeddings API instead. For example, the text-embeddings API might be better for text-based semantic search, clustering, long-form document analysis, and other text retrieval or question-answering use cases. For more information, see Get text embeddings.
+Use cases
+Image classification: Takes an image as input and predicts one or more classes (labels).
+Image search: Search relevant or similar images.
+Recommendations: Generate product or ad recommendations based on images.
+Supported models
+You can get image embeddings by using the following models:
+multimodalembedding
+Best practices
+Consider the following input aspects when using the multimodal embeddings model:
+Text in images - The model can distinguish text in images, similar to optical character recognition (OCR). If you need to distinguish between a description of the image content and the text within an image, consider using prompt engineering to specify your target content. For example: instead of just "cat", specify "picture of a cat" or "the text 'cat'", depending on your use case.
+
+
+
+
+the text 'cat'
+
+
+
+
+picture of a cat
+Image credit: Manja Vitolic on Unsplash.
+Embedding similarities - The dot product of embeddings isn't a calibrated probability. The dot product is a similarity metric and might have different score distributions for different use cases. Consequently, avoid using a fixed value threshold to measure quality. Instead, use ranking approaches for retrieval, or use sigmoid for classification.
+API usage
+API limits
+The following limits apply when you use the multimodalembedding model:
+Limit Value and description
+Maximum number of API requests per minute per project 120
+Maximum text length 32 tokens (~32 words)
+
+The maximum text length is 32 tokens (approximately 32 words). If the input exceeds 32 tokens, the model internally shortens the input to this length.
+Language English
+Image size 20 MB
+
+The maximum image size accepted is 20 MB. To avoid increased network latency, use smaller images. Additionally, the model resizes images to 512 x 512 pixel resolution. Consequently, you don't need to provide higher resolution images.
+Before you begin
+Sign in to your Google Cloud account. If you're new to Google Cloud, create an account to evaluate how our products perform in real-world scenarios. New customers also get $300 in free credits to run, test, and deploy workloads.
+In the Google Cloud console, on the project selector page, select or create a Google Cloud project.
+Go to project selector
+Make sure that billing is enabled for your Google Cloud project.
+Enable the Vertex AI API.
+Enable the API
+Certain tasks in Vertex AI require that you use additional Google Cloud products besides Vertex AI. For example, in most cases, you must use Cloud Storage and Artifact Registry when you create a custom training pipeline. You might need to perform additional setup tasks to use other Google Cloud products.
+Set up authentication for your environment.
+Select the tab for how you plan to use the samples on this page:
+Python
+REST
+To use the Python samples on this page from a local development environment, install and initialize the gcloud CLI, and then set up Application Default Credentials with your user credentials.
+Install the Google Cloud CLI.
+To initialize the gcloud CLI, run the following command:
+gcloud init
+Update and install gcloud components:
+gcloud components update
+gcloud components install beta
+Create local authentication credentials for your Google Account:
+gcloud auth application-default login
+For more information, see Set up authentication for a local development environment in the Google Cloud authentication documentation.
+
+To use the Python client library, use the following command to download the predict_request_gapic.py and requirements.txt files from the Cloud Storage bucket and install the dependencies in the requirements file.
+mkdir multimodalembedding
+cd $_
+gsutil cp gs://vertex-ai/generative-ai/vision/multimodalembedding/* .
+pip3 install -r requirements.txt
+Error messages
+Quota exceeded error
+google.api_core.exceptions.ResourceExhausted: 429 Quota exceeded for
+aiplatform.googleapis.com/online_prediction_requests_per_base_model with base
+model: multimodalembedding. Please submit a quota increase request.
+If this is the first time you receive this error, use the Google Cloud console to request a quota increase for your project. Use the following filters before requesting your increase:
+Service ID: aiplatform.googleapis.com
+metric: aiplatform.googleapis.com/online_prediction_requests_per_base_model
+base_model:multimodalembedding
+Go to Quotas
+If you have already sent a quota increase request, wait before sending another request. If you need to further increase the quota, repeat the quota increase request with your justification for a sustained quota request.
+Send a text-only embedding request
+Note: For text-only embedding use cases, we recommend using the Vertex AI text-embeddings API instead. For example, the text-embeddings API might be better for text-based semantic search, clustering, long-form document analysis, and other text retrieval or question-answering use cases. For more information, see Get text embeddings.
+Python
+REST
+Use the following sample to send a request with the provided Python client library.
+Before using any of the request data, make the following replacements:
+TEXT: The target text to get embeddings for. For example, a cat.
+PROJECT_ID: Your Google Cloud project ID.
+python3 predict_request_gapic.py \
+  --text '
+TEXT' \
+  --project "
+PROJECT_ID"
+Response:
+EmbeddingResponse(text_embedding=[0.00563759683, -0.00792694464, 
+[...], 0.00574193, -0.00809271634], image_embedding=None)
+
+
+
+
+
+
+
+
+
+
+
+
+Send an image-only embedding request
+Python
+REST
+Use the following sample to send a request with the provided Python client library.
+Before using any of the request data, make the following replacements:
+IMAGE_FILE: The path to the local target image to get embeddings for. For example, ./embeddings/cat-img.jpg.
+PROJECT_ID: Your Google Cloud project ID.
+python3 predict_request_gapic.py \
+  --image_file '
+IMAGE_FILE' \
+  --project "
+PROJECT_ID"
+Response:
+EmbeddingResponse(text_embedding=None, image_embedding=[-0.00422835723, 0.0212707501, -0.012832596, -0.0529573075, 
+...])
+
+
+
+
+
+
+
+
+
+
+
+
+Send a text and image embedding request
+Python
+REST
+Use the following sample to send a request with the provided Python client library.
+Before using any of the request data, make the following replacements:
+IMAGE_FILE: The path to the local target image to get embeddings for. For example, ./embeddings/cat-img.jpg.
+TEXT: The target text to get embeddings for. For example, a cat.
+PROJECT_ID: Your Google Cloud project ID.
+python3 predict_request_gapic.py \
+  --image_file '
+IMAGE_FILE' \
+  --text '
+TEXT' \
+  --project "
+PROJECT_ID"
+Response:
+EmbeddingResponse(text_embedding=[0.00563759683, -0.00792694464, 
+...], image_embedding=[-0.00422835723, 0.0212707501, -0.012832596, -0.0529573075, 
+...])
+
+
+
+
+
+
+
+
+
+
+
+
+What's next
+Read the blog "What is Multimodal Search: 'LLMs with vision' change businesses".
+For information about text-only use cases (text-based semantic search, clustering, long-form document analysis, and other text retrieval or question-answering use cases), read Get text embeddings.
+View all Vertex AI image generative AI offerings in the Imagen on Vertex AI overview.
+Explore more pretrained models in Model Garden.
+Learn about responsible AI best practices and safety filters in Vertex AI.
+Was this helpful?
+Send feedback

@@ -1,0 +1,383 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Code chat
+bookmark_border
+On this page
+Use cases
+HTTP request
+Model versions
+Request body
+Sample request
+Codey for Code Chat (codechat-bison) is the name of the model that supports code chat. It's a foundation model that supports multi-turn conversations that are specialized for code. The model allows developers to chat with a chatbot for help with code-related questions. The code chat API is used to interface with the Codey for Code Chat model.
+Codey for Code Chat is ideal for code tasks that are completed with back-and-forth interactions so you can engage in a continuous conversation. For code tasks that require a single interaction, use the API for code completion or the API for code generation.
+To explore this model in the console, see the Codey for Code Chat model card in the Model Garden.
+Go to the Model Garden
+Use cases
+Some common used cases for code chat are:
+Get help about code: Get help with questions you have about code, such as questions about an API, syntax in a supported programming language, or which version of a library is required for code you're writing.
+Debugging: Get help with debugging code that doesn't compile or that contains a bug.
+Documentation: Get help understanding code so you can document it accurately.
+Learn about code: Get help learning about code you're not familiar with.
+HTTP request
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/codechat-bison:predict
+Model versions
+To use the latest model version, specify the model name without a version number, for example codechat-bison.
+To use a stable model version, specify the model version number, for example codechat-bison@001. Each stable version is available for six months after the release date of the subsequent stable version.
+The following table contains the available stable model versions:
+codechat-bison model Release date
+codechat-bison@001 June 29, 2023
+For more information, see Model versions and lifecycle.
+Request body
+{
+  "instances": [
+    {
+      "context": string,
+      "messages": [
+        {
+          "content": string,
+          "author": string
+        }
+  ],
+  "parameters": {
+    "temperature": number,
+    "maxOutputTokens": integer,
+    "candidateCount": integer
+  }
+}
+
+The following are the parameters for the code chat model named codechat-bison. The codechat-bison model is one of the models in Codey. You can use these parameters to help optimize your prompt for a chatbot conversation about code. For more information, see Code models overview and Create prompts to chat about code.
+Parameter Description Acceptable values
+context
+Text that should be provided to the model first to ground the response. Text
+messages
+(required)
+Conversation history provided to the model in a structured alternate-author form. Messages appear in chronological order: oldest first, newest last. When the history of messages causes the input to exceed the maximum length, the oldest messages are removed until the entire prompt is within the allowed limit.
+List[Structured Message]
+    "author": "user",
+     "content": "user message"
+temperature
+(optional)
+The temperature is used for sampling during response generation. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 means that the highest probability tokens are always selected. In this case, responses for a given prompt are mostly deterministic, but a small amount of variation is still possible.
+0.0–1.0
+Default: 0.2
+maxOutputTokens
+(optional)
+Maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+Specify a lower value for shorter responses and a higher value for longer responses.
+1–2048
+Default: 1024
+candidateCount
+(optional)
+The number of response variations to return.
+1-4
+Default: 1
+Sample request
+REST
+Vertex AI SDK for Python
+Node.js
+Java
+To test a text prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your project ID.
+For other fields, see the Request body table.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/codechat-bison:predict
+Request JSON body:
+{
+  "instances": [
+    { "messages": [
+      {
+         "author": 
+AUTHOR",
+         "author": 
+CONTENT"
+      }
+  ],
+  "parameters": {
+    "temperature": 
+TEMPERATURE,
+    "maxOutputTokens": 
+MAX_OUTPUT_TOKENS,
+    "candidateCount": 
+CANDIDATE_COUNT
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/codechat-bison:predict"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the sample response.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Response body
+{
+  "predictions": [
+    {
+      "candidates": [
+        {
+          "author": string,
+          "content": string
+        }
+      ],
+      "citationMetadata": {
+        "citations": [
+          {
+            "startIndex": integer,
+            "endIndex": integer,
+            "url": string,
+            "title": string,
+            "license": string,
+            "publicationDate": string
+          }
+        ]
+      },
+      "safetyAttributes": {
+        "categories": [],
+        "blocked": false,
+        "scores": []
+      },
+      "score": float
+    }
+  ]
+}
+Response element Description
+author A string that indicates the author of a chat response.
+blocked A boolean flag associated with a safety attribute that indicates if the model's input or output was blocked.
+candidates A list of chat responses generated during a chat session.
+categories A list the safety attribute category names that are associated with the generated content. The order of the scores in the scores parameter matches the order of the categories. For example, the first score in the scores parameter indicates the likelihood that the response violates the first category in the categories list.
+content The content of a chat response.
+endIndex An integer that specifies where a citation ends in the content.
+license The license associated with a citation.
+publicationDate The date a citation was published. Its valid formats are YYYY, YYYY-MM, and YYYY-MM-DD.
+safetyAttributes An array of safety attributes. The array contains one safety attribute for each response candidate.
+score A float value that's less than zero. The higher the value for score, the greater confidence the model has in its response.
+scores An array of float values. Each value is a score that indicates the likelihood that the response violates the safety category it's checked against. The lower the value, the safer the model considers the response. The order of the scores in the array corresponds to the order of the safety attributes in the categories response element.
+startIndex An integer that specifies where a citation starts in the content.
+title The title of a citation source. Examples of source titles might be that of a news article or a book.
+url The URL of a citation source. Examples of a URL source might be a news website or a GitHub repository.
+Sample response
+{
+  "predictions": [
+    {
+      "citationMetadata": [
+        {
+          "citations": []
+        }
+      ],
+      "candidates": [
+        {
+          "author": "AUTHOR",
+          "content": "RESPONSE"
+        }
+      ],
+      "safetyAttributes": {
+        "categories": [],
+        "blocked": false,
+        "scores": []
+      },
+      "score": -1.1161688566207886
+    }
+  ]
+}
+Stream response from Generative AI models
+The parameters are the same for streaming and non-streaming requests to the APIs.
+To view sample code requests and responses using the REST API, see Examples using the streaming REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python for streaming.
+Was this helpful?
+Send feedback

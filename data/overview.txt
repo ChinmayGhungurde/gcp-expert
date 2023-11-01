@@ -1,0 +1,56 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Model API reference for Generative AI
+bookmark_border
+On this page
+Generative AI foundational model reference
+Stream response from Generative AI models
+Available regions
+Responsible AI reference
+What's next
+Generative AI on Vertex AI (also known as genai) gives you access to Google's large generative AI models in Vertex AI.
+Generative AI foundational model reference
+Model name Description Can stream responses
+PaLM 2 for Text (text-bison)
+Fine-tuned to follow natural language instructions and is suitable for a variety of language tasks.
+✔
+Embeddings for text (textembedding-gecko)
+Returns model embeddings for text inputs.
+PaLM 2 for Chat (chat-bison)
+Fine-tuned for multi-turn conversation use cases.
+✔
+Codey for Code Generation (code-bison)
+A model fine-tuned to generate code based on a natural language description of the desired code. For example, it can generate a unit test for a function.
+✔
+Codey for Code Chat (codechat-bison)
+A model fine-tuned for chatbot conversations that help with code-related questions.
+✔
+Codey for Code Completion (code-gecko)
+A model fine-tuned to suggest code completion based on the context in code that's written.
+Imagen for Image Generation (imagegeneration)
+This model supports image generation and can create high quality visual assets in seconds.
+Embeddings for multimodal (multimodalembedding)
+This model generates vectors based on the input you provide, which can include a combination of image and text.
+Image captioning (imagetext)
+This model supports image captioning and can generate captions from an image you provide based on the language that you specify.
+Visual Question Answering - VQA (imagetext)
+A model that supports image question and answering.
+Stream response from Generative AI models
+The parameters are the same for streaming and non-streaming requests to the APIs.
+To view sample code requests and responses using the REST API, see Examples using the streaming REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python for streaming.
+Available regions
+Currently all foundation models supported in Generative AI on Vertex AI are available in us-central1
+Responsible AI reference
+To learn about safety specific attributes and view sample responses, see Safety filters and attributes. Throughout these references there is a citation parameter. To learn more about citations, see Citation metadata.
+What's next
+Generative AI on Vertex AI has some limitations. To learn more, see PaLM API limitations.
+Try a quickstart tutorial using Generative AI Studio or the Vertex AI API.
+Explore pretrained models in Model Garden.
+Learn about quotas and limits.
+Learn about pricing.
+Was this helpful?
+Send feedback

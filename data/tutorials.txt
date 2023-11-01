@@ -1,0 +1,26 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Vertex AI generative AI notebook tutorials
+bookmark_border
+On this page
+Create a semantic search using text embeddings
+Use Vertex AI Embeddings for Multimodal and Vector Search
+What's next
+This document contains a list of notebook tutorials for Generative AI on Vertex AI. They're end-to-end tutorials that show you how to use some of the GenAI LLMs.
+Create a semantic search using text embeddings
+In this tutorial, you create an embedding generated from text and perform a semantic search. The embeddings are generated using Google ScaNN: Efficient Vector Similarity Search.
+Jupyter notebook: You can choose to run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+Use Vertex AI Embeddings for Multimodal and Vector Search
+In this tutorial, learn how to create text-to-image embeddings using the DiffusionDB dataset and the Vertex AI Embeddings for Multimodal model. The embeddings are uploaded to the Vector Search service, which is a high scale, low latency solution to find similar vectors for a large corpus.
+Jupyter notebook: You can choose to run this tutorial as a Jupyter notebook.
+Run in Colab | View on GitHub
+What's next
+Learn about LLMs, Vertex AI, and PaLM models with notebook tutorials
+Explore more resources in the Generative AI GitHub repo
+See other Vertex AI notebook tutorials in the Tutorials overview
+Was this helpful?
+Send feedback

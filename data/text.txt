@@ -1,0 +1,371 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Text
+bookmark_border
+On this page
+Use cases
+HTTP request
+Model versions
+Request body
+Sample request
+The PaLM 2 for Text (text-bison) foundation model is optimized for a variety of natural language tasks such as sentiment analysis, entity extraction, and content creation. The types of content that the PaLM 2 for Text model can create include document summaries, answers to questions, and labels that classify content.
+The PaLM 2 for Text model is ideal for tasks that can be completed with one API response, without the need for continuous conversation. For text tasks that require back-and-forth interactions, use the Generative AI on Vertex AI API for chat.
+To explore this model in the console, select the PaLM 2 for Text model card in the Model Garden.
+Go to the Model Garden
+Use cases
+Summarization: Create a shorter version of a document that incorporates pertinent information from the original text. For example, you might want to summarize a chapter from a textbook. Or, you could create a succinct product description from a long paragraph that describes the product in detail. Question answering: Provide answers to questions in text. For example, you might automate the creation of a Frequently Asked Questions (FAQ) document from knowledge base content.
+Classification: Assign a label to provided text. For example, a label might be applied to text that describes how grammatically correct it is.
+Sentiment analysis: This is a form of classification that identifies the sentiment of text. The sentiment is turned into a label that's applied to the text. For example, the sentiment of text might be polarities like positive or negative, or sentiments like anger or happiness.
+Question answering: Provide answers to questions in text. For example, you might automate the creation of a Frequently Asked Questions (FAQ) document from knowledge base content.
+Entity extraction: Extract a piece of information from text. For example, you can extract the name of a movie from the text of an article.
+For more information on designing text prompts, see Design text prompts.
+HTTP request
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/text-bison:predict
+See the predict method for more information.
+Model versions
+To use the latest model version, specify the model name without a version number, for example text-bison.
+To use a stable model version, specify the model version number, for example text-bison@001. Each stable version is available for six months after the release date of the subsequent stable version.
+The following table contains the available stable model versions:
+text-bison model Release date
+text-bison@001 June 7, 2023
+For more information, see Model versions and lifecycle.
+Request body
+{
+  "instances": [
+    { 
+      "prompt": string
+    }
+  ],
+  "parameters": {
+    "temperature": number,
+    "maxOutputTokens": integer,
+    "topK": integer,
+    "topP": number,
+    "stopSequences": [ string ],
+    "candidateCount": integer
+  }
+}
+Use the following parameters for the text model text-bison. For more information, see Design text prompts.
+Parameter Description Acceptable values
+prompt
+Text input to generate model response. Prompts can include preamble, questions, suggestions, instructions, or examples. Text
+temperature
+The temperature is used for sampling during response generation, which occurs when topP and topK are applied. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 means that the highest probability tokens are always selected. In this case, responses for a given prompt are mostly deterministic, but a small amount of variation is still possible.
+For most use cases, try starting with a temperature of 0.2. If the model returns a response that's too generic, too short, or the model gives a fallback response, try increasing the temperature.
+0.0–1.0
+Default: 0.0
+maxOutputTokens
+Maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+Specify a lower value for shorter responses and a higher value for longer responses.
+1–2048 for text-bison (latest)
+1–1024 for text-bison@001
+topK
+Top-K changes how the model selects tokens for output. A top-K of 1 means the next selected token is the most probable among all tokens in the model's vocabulary (also called greedy decoding), while a top-K of 3 means that the next token is selected from among the three most probable tokens by using temperature.
+For each token selection step, the top-K tokens with the highest probabilities are sampled. Then tokens are further filtered based on top-P with the final token selected using temperature sampling.
+Specify a lower value for less random responses and a higher value for more random responses. The default top-K is 40.
+1–40
+Default: 40
+topP
+Top-P changes how the model selects tokens for output. Tokens are selected from the most (see top-K) to least probable until the sum of their probabilities equals the top-P value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the top-P value is 0.5, then the model will select either A or B as the next token by using temperature and excludes C as a candidate.
+Specify a lower value for less random responses and a higher value for more random responses. The default top-P is 0.95.
+0.0–1.0
+Default: 0.95
+stopSequence
+Specifies a list of strings that tells the model to stop generating text if one of the strings is encountered in the response. If a string appears multiple times in the response, then the response truncates where it's first encountered. The strings are case-sensitive.
+
+For example, if the following is the returned response when stopSequences isn't specified:
+
+public static string reverse(string myString)
+
+Then the returned response with stopSequences set to ["Str", "reverse"] is:
+
+public static string
+default: []
+candidateCount
+The number of response variations to return.
+1–8
+Default: 1
+Sample request
+REST
+Vertex AI SDK for Python
+Node.js
+Java
+To test a text prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your project ID.
+For other fields, see the Request body table.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/text-bison:predict
+Request JSON body:
+{
+  "instances": [
+    { "prompt": "Give me ten interview questions for the role of program manager."}
+  ],
+  "parameters": {
+    "temperature": 0.2,
+    "maxOutputTokens": 256,
+    "topK": 40,
+    "topP": 0.95
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/text-bison:predict"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the sample response.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Response body
+{
+  "predictions": [
+    {
+      "content": string,
+      "citationMetadata": {
+        "citations": [
+          {
+            "startIndex": integer,
+            "endIndex": integer,
+            "url": string,
+            "title": string,
+            "license": string,
+            "publicationDate": string
+          }
+        ]
+      },
+      "safetyAttributes": {
+        "categories": [ string ],
+        "blocked": boolean,
+        "scores": [ numeric ]
+      }
+    }
+  ]
+  "metadata": {
+    "tokenMetadata": {
+      "input_token_count": {
+        "total_tokens": integer,
+        "total_billable_characters": integer
+      },
+      "output_token_count": {
+        "total_tokens": integer,
+        "total_billable_characters": integer
+      }
+    }
+  }
+}
+Response element Description
+content The result generated from input text.
+categories The display names of Safety Attribute categories associated with the generated content. Order matches the Scores.
+scores The confidence scores of the each category, higher value means higher confidence.
+blocked A flag indicating if the model's input or output was blocked.
+errors An error code that identifies why the input or output was blocked. For a list of error codes, see Safety filters and attributes.
+startIndex Index in the prediction output where the citation starts (inclusive). Must be >= 0 and < end_index.
+endIndex Index in the prediction output where the citation ends (exclusive). Must be > start_index and < len(output).
+url URL associated with this citation. If present, this URL links to the webpage of the source of this citation. Possible URLs include news websites, GitHub repos, etc.
+title Title associated with this citation. If present, it refers to the title of the source of this citation. Possible titles include news titles, book titles, etc.
+license License associated with this recitation. If present, it refers to the license of the source of this citation. Possible licenses include code licenses, e.g., mit license.
+publicationDate Publication date associated with this citation. If present, it refers to the date at which the source of this citation was published. Possible formats are YYYY, YYYY-MM, YYYY-MM-DD.
+input_token_count Number of input tokens. This is the total number of tokens across all prompts, prefixes, and suffixes.
+output_token_count Number of output tokens. This is the total number of tokens in content across all predictions.
+Sample response
+{
+  "predictions": [
+    {
+      "citationMetadata": {
+        "citations": []
+      },
+      "safetyAttributes": {
+        "scores": [
+          0.1
+        ],
+        "categories": [
+          "Finance"
+        ],
+        "blocked": false
+      },
+      "content": "1. What is your experience with project management?\n2. What are your strengths and weaknesses as a project manager?\n3. How do you handle conflict and difficult situations?\n4. How do you communicate with stakeholders?\n5. How do you stay organized and on track?\n6. How do you manage your time effectively?\n7. What are your goals for your career?\n8. Why are you interested in this position?\n9. What are your salary expectations?\n10. What are your availability and start date?"
+    }
+  ]
+}
+Stream response from Generative AI models
+The parameters are the same for streaming and non-streaming requests to the APIs.
+To view sample code requests and responses using the REST API, see Examples using the REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python.
+Was this helpful?
+Send feedback

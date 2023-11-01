@@ -1,0 +1,479 @@
+Vertex AI
+Documentation
+Guides
+Send feedback
+Quickstart using the Vertex AI API
+bookmark_border
+On this page
+Try text prompts
+Parameter definitions
+Sample text prompts
+Try chat prompts
+Sample chat prompts
+Try getting text embeddings
+Request and response
+Request body
+General availability
+PaLM APIs for text, chat, code, embeddings, and supervised tuning for text-bison are now GA and incur costs when they're used. For more information, see Pricing for Generative AI on Vertex AI and the Generative AI on Vertex AI release notes.
+The Vertex AI PaLM API lets you test, customize, and deploy instances of Google's PaLM 2 large language models (LLM) so that you can leverage the capabilities of PaLM 2 in your applications. The PaLM 2 family of models supports text completion, multi-turn chat, and text embeddings generation. This page shows you how to quickly get started with all three use cases.
+To get started with the Vertex AI PaLM API, go to the Cloud Shell by doing the following:
+Go to the Google Cloud console.
+Go to Google Cloud console
+Click the terminal Activate Cloud Shell icon at the top right.
+Now you're ready to start using running curl commands to the PaLM API.
+Try text prompts
+Parameter definitions
+The following table shows the parameters that you need to configure for the Vertex AI PaLM API for text:
+Parameter Description Acceptable values
+prompt
+Text input to generate model response. Prompts can include preamble, questions, suggestions, instructions, or examples. Text
+temperature
+The temperature is used for sampling during response generation, which occurs when topP and topK are applied. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 means that the highest probability tokens are always selected. In this case, responses for a given prompt are mostly deterministic, but a small amount of variation is still possible.
+For most use cases, try starting with a temperature of 0.2. If the model returns a response that's too generic, too short, or the model gives a fallback response, try increasing the temperature.
+0.0–1.0
+Default: 0
+maxOutputTokens
+Maximum number of tokens that can be generated in the response. Specify a lower value for shorter responses and a higher value for longer responses.
+
+A token may be smaller than a word. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+1–1024
+Default: 0
+topK
+Top-k changes how the model selects tokens for output. A top-k of 1 means the selected token is the most probable among all tokens in the model's vocabulary (also called greedy decoding), while a top-k of 3 means that the next token is selected from among the 3 most probable tokens (using temperature).
+
+For each token selection step, the top K tokens with the highest probabilities are sampled. Then tokens are further filtered based on topP with the final token selected using temperature sampling.
+
+Specify a lower value for less random responses and a higher value for more random responses.
+1–40
+Default: 40
+topP
+Top-p changes how the model selects tokens for output. Tokens are selected from most K (see topK parameter) probable to least until the sum of their probabilities equals the top-p value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the top-p value is 0.5, then the model will select either A or B as the next token (using temperature) and doesn't consider C. The default top-p value is 0.95.
+
+Specify a lower value for less random responses and a higher value for more random responses.
+0.0–1.0
+Default: 0.95
+Sample text prompts
+Select one of the following tabs and copy sample text prompt with your Project ID configured. Paste the prompt into Cloud Shell to query the model for a response.
+Summarization
+Classification
+Sentiment analysis
+Extraction
+Ideation
+MODEL_ID="text-bison"
+PROJECT_ID=
+PROJECT_ID
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID}:predict -d \
+$'{
+  "instances": [
+    { "prompt": "Provide a summary with about two sentences for the following article:
+The efficient-market hypothesis (EMH) is a hypothesis in financial \
+economics that states that asset prices reflect all available \
+information. A direct implication is that it is impossible to \
+\\"beat the market\\" consistently on a risk-adjusted basis since market \
+prices should only react to new information. Because the EMH is \
+formulated in terms of risk adjustment, it only makes testable \
+predictions when coupled with a particular model of risk. As a \
+result, research in financial economics since at least the 1990s has \
+focused on market anomalies, that is, deviations from specific \
+models of risk. The idea that financial market returns are difficult \
+to predict goes back to Bachelier, Mandelbrot, and Samuelson, but \
+is closely associated with Eugene Fama, in part due to his \
+influential 1970 review of the theoretical and empirical research. \
+The EMH provides the basic logic for modern risk-based theories of \
+asset prices, and frameworks such as consumption-based asset pricing \
+and intermediary asset pricing can be thought of as the combination \
+of a model of risk with the EMH. Many decades of empirical research \
+on return predictability has found mixed evidence. Research in the \
+1950s and 1960s often found a lack of predictability (e.g. Ball and \
+Brown 1968; Fama, Fisher, Jensen, and Roll 1969), yet the \
+1980s-2000s saw an explosion of discovered return predictors (e.g. \
+Rosenberg, Reid, and Lanstein 1985; Campbell and Shiller 1988; \
+Jegadeesh and Titman 1993). Since the 2010s, studies have often \
+found that return predictability has become more elusive, as \
+predictability fails to work out-of-sample (Goyal and Welch 2008), \
+or has been weakened by advances in trading technology and investor \
+learning (Chordia, Subrahmanyam, and Tong 2014; McLean and Pontiff \
+2016; Martineau 2021).
+Summary:
+"}
+  ],
+  "parameters": {
+    "temperature": 0.2,
+    "maxOutputTokens": 256,
+    "topK": 40,
+    "topP": 0.95
+  }
+}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Try chat prompts
+For chat API calls, the context, examples, and messages combine to form the prompt. The following table shows the parameters that you need to configure for the Vertex AI PaLM API for text:
+Parameter Description Acceptable values
+context
+(optional)
+Context shapes how the model responds throughout the conversation. For example, you can use context to specify words the model can or cannot use, topics to focus on or avoid, or the response format or style. Text
+examples
+(optional)
+List of structured messages to the model to learn how to respond to the conversation.
+List[Structured Message]
+   "input": {"content": "provide content"},
+   "output": {"content": "provide content"}
+}
+messages
+(required)
+Conversation history provided to the model in a structured alternate-author form. Messages appear in chronological order: oldest first, newest last. When the history of messages causes the input to exceed the maximum length, the oldest messages are removed until the entire prompt is within the allowed limit.
+List[Structured Message]
+    "author": "user",
+     "content": "user message",
+}
+temperature
+The temperature is used for sampling during the response generation, which occurs when topP and topK are applied. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a more deterministic and less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 is deterministic: the highest probability response is always selected. For most use cases, try starting with a temperature of 0.2.
+0.0–1.0
+Default: 0
+maxOutputTokens
+Maximum number of tokens that can be generated in the response. Specify a lower value for shorter responses and a higher value for longer responses.
+
+A token may be smaller than a word. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+1–1024
+Default: 0
+topK
+Top-k changes how the model selects tokens for output. A top-k of 1 means the selected token is the most probable among all tokens in the model's vocabulary (also called greedy decoding), while a top-k of 3 means that the next token is selected from among the 3 most probable tokens (using temperature).
+
+For each token selection step, the top K tokens with the highest probabilities are sampled. Then tokens are further filtered based on topP with the final token selected using temperature sampling.
+
+Specify a lower value for less random responses and a higher value for more random responses.
+1–40
+Default: 40
+topP
+Top-p changes how the model selects tokens for output. Tokens are selected from most K (see topK parameter) probable to least until the sum of their probabilities equals the top-p value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the top-p value is 0.5, then the model will select either A or B as the next token (using temperature) and doesn't consider C. The default top-p value is 0.95.
+
+Specify a lower value for less random responses and a higher value for more random responses.
+0.0–1.0
+Default: 0.95
+Sample chat prompts
+Copy sample chat prompt in one of the following tabs with your Project ID configured. Paste the prompt into Cloud Shell to query the model for a response.
+Chat prompt #1
+Chat prompt #2
+MODEL_ID="chat-bison"
+PROJECT_ID=
+PROJECT_ID
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID}:predict -d \
+'{
+  "instances": [{
+      "context":  "My name is Ned. You are my personal assistant. My favorite movies are Lord of the Rings and Hobbit.",
+      "examples": [ { 
+          "input": {"content": "Who do you work for?"},
+          "output": {"content": "I work for Ned."}
+      },
+      { 
+          "input": {"content": "What do I like?"},
+          "output": {"content": "Ned likes watching movies."}
+      }],
+      "messages": [
+      { 
+          "author": "user",
+          "content": "Are my favorite movies based on a book series?",
+      }],
+  }],
+  "parameters": {
+    "temperature": 0.3,
+    "maxOutputTokens": 200,
+    "topP": 0.8,
+    "topK": 40
+  }
+}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Try getting text embeddings
+The Vertex AI PaLM Embedding API performs online (real-time) predictions to get embeddings from input text.
+The API accepts a maximum of 3,072 input tokens and outputs 768-dimensional vector embeddings.
+Request and response
+Request body
+The request body contains data with the following structure:
+JSON representation
+{
+  "instances": [
+    {"content": "text to generate embeddings"}
+  ]
+}
+Fields
+instances value (Value format)
+
+Required. Instances that are input to the prediction call.
+
+Note: The API currently limits sending up to two examples per call.
+
+The schema of the instance is specified via Endpoint's DeployedModels' Model's PredictSchemata's instanceSchemaUri.
+Response body
+If successful, the response body contains data with the following structure:
+Response message for PredictionService.Predict.
+JSON representation
+{
+  "predictions": [
+    {
+      "embeddings": {
+        "values": [0.000001, ..., 0.000001]
+      }
+    }
+  ],
+  "deployedModelId": string,
+  "model": string,
+  "modelVersionId": string,
+  "modelDisplayName": string
+}
+Fields
+predictions value (Value format)
+
+The predictions that are the output of the predictions call.
+
+The schema of any single prediction may be specified via Endpoint's DeployedModels' Model's PredictSchemata's predictionSchemaUri.
+deployedModelId string
+
+ID of the Endpoint's DeployedModel that served this prediction.
+model string
+Output only. The resource name of the Model which is deployed as the DeployedModel that this prediction hits.
+modelVersionId string
+Output only. The version ID of the Model which is deployed as the DeployedModel that this prediction hits.
+modelDisplayName string
+Output only. The display name of the Model which is deployed as the DeployedModel that this prediction hits.
+Sample embedding request
+The Vertex AI PaLM Embedding API performs online (real-time) predictions to get embeddings from input text.
+The API accepts a maximum of 3,072 input tokens and outputs 768-dimensional vector embeddings.
+Copy sample embedding request with your Project ID configured. Paste the prompt into Cloud Shell to query the model to generate text embeddings.
+Get text embeddings
+MODEL_ID="textembedding-gecko"
+PROJECT_ID=
+PROJECT_ID
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID?}:predict -d \
+$'{
+  "instances": [
+    { "content": "What is life?"}
+  ],
+}'
+What's next
+Learn how to test prompts in Generative AI Studio.
+Learn more about prompt design for text and chat.
+Learn more about text embedding.
+Learn how to tune foundation models.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Send feedback

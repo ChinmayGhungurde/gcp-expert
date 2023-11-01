@@ -1,0 +1,65 @@
+Vertex AI
+Documentation
+Generative AI
+Send feedback
+Try text chat prompts
+bookmark_border
+On this page
+Before you begin
+Try text chat prompts
+Stream response from chat model
+What's next
+Use Vertex AI to send a text chat prompt to Google's PaLM 2 Large Language Model (LLM) and to receive a response. Test and customize prompts to meet the needs of your application.
+Before you begin
+Before you can try the text chat prompts, you must do the following:
+Set up a project and a development environment. The project ID is needed to run the sample code.
+Familiarize yourself with the text chat parameters that you must replace before running the sample code.
+Review the text chat use cases to help you identify which type of sample to create.
+Try text chat prompts
+You can run the sample code in the Cloud Shell terminal in the Google Cloud console.
+Go to Cloud Shell
+Edit the placeholders in the sample code, and copy to the console.
+  MODEL_ID="chat-bison"
+  PROJECT_ID=
+PROJECT_ID
+
+  curl \
+  -X POST \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+  https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/${MODEL_ID}:predict -d \
+  '{
+    "instances": [{
+        "context":  "My name is Ned. You are my personal assistant. My favorite movies are Lord of the Rings and Hobbit.",
+        "examples": [ {
+            "input": {"content": "Who do you work for?"},
+            "output": {"content": "I work for Ned."}
+        },
+        {
+            "input": {"content": "What do I like?"},
+            "output": {"content": "Ned likes watching movies."}
+        }],
+        "messages": [
+        {
+            "author": "user",
+            "content": "Are my favorite movies based on a book series?",
+        }],
+    }],
+    "parameters": {
+      "temperature": 0.3,
+      "maxOutputTokens": 200,
+      "topP": 0.8,
+      "topK": 40
+    }
+  }'
+Stream response from chat model
+To view sample code requests and responses using the REST API, see Examples using the REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python.
+What's next
+Learn about designing text prompts. and text chat prompts.
+Learn how to test prompts in Generative AI Studio.
+Learn about text embeddings.
+Try to tune a language foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Send feedback

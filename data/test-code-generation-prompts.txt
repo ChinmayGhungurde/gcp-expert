@@ -1,0 +1,243 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Test code generation prompts
+bookmark_border
+On this page
+Test code generation prompts
+Stream response from code model
+What's next
+To design a prompt that works well, test different versions of the prompt and experiment with prompt parameters to determine what results in the optimal response. You can test prompts programmatically with the Codey APIs and in the Google Cloud console with Generative AI Studio.
+Test code generation prompts
+To test code generation prompts, choose one of the following methods.
+REST
+Vertex AI SDK for Python
+Node.js
+Java
+Console
+To test a code generation prompt with the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your project ID.
+PREFIX: For code models, prefix represents the beginning of a piece of meaningful programming code or a natural language prompt that describes code to be generated.
+TEMPERATURE: The temperature is used for sampling during response generation. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 means that the highest probability tokens are always selected. In this case, responses for a given prompt are mostly deterministic, but a small amount of variation is still possible.
+MAX_OUTPUT_TOKENS: Maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+Specify a lower value for shorter responses and a higher value for longer responses.
+CANDIDATE_COUNT: The number of response variations to return. The range of valid values is an int between 1 and 4.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/code-bison:predict
+Request JSON body:
+{
+  "instances": [
+    { "prefix": "
+PREFIX" }
+  ],
+  "parameters": {
+    "temperature": 
+TEMPERATURE,
+    "maxOutputTokens": 
+MAX_OUTPUT_TOKENS,
+    "candidateCount": 
+CANDIDATE_COUNT
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/code-bison:predict"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following.
+Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example curl command
+MODEL_ID="code-bison"
+PROJECT_ID=
+PROJECT_ID
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID}:predict -d \
+$"{
+  'instances': [
+    { 'prefix': 'Write a function that checks if a year is a leap year.' }
+  ],
+  'parameters': {
+    'temperature': 0.2,
+    'maxOutputTokens': 1024,
+    'candidateCount': 1
+  }
+}"
+To learn more about prompt design for code generation, see Create prompts for code generation.
+Stream response from code model
+To view sample code requests and responses using the REST API, see Examples using the streaming REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python for streaming.
+What's next
+Learn how to create code chat prompts.
+Learn how to create code completion prompts.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

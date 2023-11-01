@@ -1,0 +1,144 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Image captions
+On this page
+Use cases
+HTTP request
+Request body
+Sample request
+Response body
+Sample response
+imagetext is the name of the model that supports image captioning. imagetext generates a caption from an image you provide based on the language that you specify. The model supports the following languages: English (en), German (de), French (fr), Spanish (es) and Italian (it).
+To explore this model in the console, see the Image Captioning model card in the Model Garden.
+Go to the Model Garden
+Use cases
+Some common use cases for image captioning include:
+Creators can generate captions for uploaded images and videos (for example, a short description of a video sequence)
+Generate captions to describe products
+Integrate captioning with an app using the API to create new experiences
+HTTP request
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/imagetext:predict
+Request body
+{
+  "instances": [
+    {
+      "image": {
+        // Union field can be only one of the following:
+        "bytesBase64Encoded": string,
+        "gcsUri": string,
+        // End of list of possible types for union field.
+        "mimeType": string
+      }
+    }
+  ],
+  "parameters": {
+    "sampleCount": integer,
+    "storageUri": string,
+    "language": string,
+    "seed": integer,
+    "includeRaiReason": bool
+  }
+}
+Use the following parameters for the Imagen model imagetext. For more information, see Get image descriptions using visual captioning.
+Parameter Description Acceptable values
+image The image you want to get captions for. Can either be Base64 image bytes or Cloud Storage URI. Base64 encoded image (20 MB)
+mask Optional. Mask image for mask-based editing. Base64 encoded image (20 MB)
+sampleCount Number of generated texts. Int value: 1-3
+seed Optional. The seed for random number generator (RNG). If RNG seed is the same for requests with the inputs, the prediction results will be the same. integer
+storageUri Optional. The Cloud Storage location to save the generated text responses. string
+language Optional. The text prompt for guiding the response. Enum of String: en (default), de, fr, it, es
+includeRaiReason Optional. Whether to enable the Responsible AI filtered reason code in responses with blocked content. bool
+Sample request
+REST
+To test a text prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your Google Cloud project ID.
+B64_IMAGE: The image to get captions for. The image must be specified as a base64-encoded byte string. Size limit: 10 MB.
+RESPONSE_COUNT: The number of image captions you want to generate. Accepted integer values: 1-3.
+LANGUAGE_CODE: One of the supported language codes. Languages supported:
+English (en)
+French (fr)
+German (de)
+Italian (it)
+Spanish (es)
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/imagetext:predict
+Request JSON body:
+{
+  "instances": [
+    {
+      "image": {
+          "bytesBase64Encoded": "
+B64_IMAGE"
+      }
+    }
+  ],
+  "parameters": {
+    "sampleCount": 
+RESPONSE_COUNT,
+    "language": "
+LANGUAGE_CODE"
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/imagetext:predict"
+
+
+
+
+
+
+
+
+The following sample responses are for a request with "sampleCount": 2. The response returns two prediction strings.
+English (en):
+{
+  "predictions": [
+    "a yellow mug with a sheep on it sits next to a slice of cake",
+    "a cup of coffee with a heart shaped latte art next to a slice of cake"
+  ],
+  "deployedModelId": "DEPLOYED_MODEL_ID",
+  "model": "projects/PROJECT_ID/locations/us-central1/models/MODEL_ID",
+  "modelDisplayName": "MODEL_DISPLAYNAME",
+  "modelVersionId": "1"
+}
+Spanish (es):
+{
+  "predictions": [
+    "una taza de café junto a un plato de pastel de chocolate",
+    "una taza de café con una forma de corazón en la espuma"
+  ],
+  "deployedModelId": "DEPLOYED_MODEL_ID",
+  "model": "projects/PROJECT_ID/locations/us-central1/models/MODEL_ID",
+  "modelDisplayName": "MODEL_DISPLAYNAME",
+  "modelVersionId": "1"
+}
+Response body
+{
+  "predictions": [ string ]
+}
+Response element Description
+predictions List of text strings representing captions, sorted by confidence.
+Sample response
+{
+  "predictions": [
+    "text1",
+    "text2"
+  ]
+}
+Was this helpful?
+Send feedback

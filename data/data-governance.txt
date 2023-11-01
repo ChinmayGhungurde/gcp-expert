@@ -1,0 +1,27 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Data Governance and Generative AI
+bookmark_border
+On this page
+Foundation model development
+Prompt Design
+Model Tuning
+Trusted Tester Program Opt-Out
+What's next
+Google was one of the first in the industry to publish an AI/ML Privacy Commitment, which outlines our belief that customers should have the highest level of security and control over their data that is stored in the cloud. That commitment extends to Google Cloud generative AI products. Google helps ensure that its teams are following these commitments through robust data governance practices, which includes reviews of the data that Google Cloud uses in the development of its products. More details about how Google processes data can also be found in Google's Customer Data Processing Addendum (CDPA).
+Foundation model development
+By default, Google Cloud does not use Customer Data to train its foundation models as part of Google Cloud`s AI/ML Privacy Commitment.
+Prompt Design
+When a request is submitted with a prompt to our foundation model, Customer Data is encrypted in-transit and input to the foundation model to generate a response. Google processes Customer Data to provide the service, and does not use Customer Data to train its models without the express consent of its customers.
+Model Tuning
+Vertex AI offers a Parameter Efficient Tuning (PET) service that enables tuning of the model to specific tasks without having to rebuild the entire foundation model. Each tuning job results in the creation of a few additional learned parameters, called 'adapter weights'. Adapter models (which contain adapter layers or adapter weights, but these terms are often used interchangeably) created by a customer when tuning pretrained models in Vertex AI are only available to the customer. Google doesn't claim ownership in the adapter models unless they include pre-existing Google IP. During inference, the foundation model receives the adapter weights, runs through the request and returns the results, without modifying the foundation model or storing the request.
+Input data is Customer Data and is stored securely at every step along the way - encrypted at rest and in transit. Tuned weights are also stored securely, and Customers will have sole access to use any tuned models. The customer is able to control the encryption of stored adapters by using customer-managed encryption keys (CMEK), and can delete adapter weights at any time. Customer Data (e.g., prompts, input data) used to train adapter models won't be logged or used for improving the foundation model without the customer's permission.
+Trusted Tester Program Opt-Out
+If you previously opted in to permit Google to use your data to improve pre-GA AI/ML services as part of the Trusted Tester Program terms, you can use the Trusted Tester Program - Opt Out Request form to opt out.
+What's next
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

@@ -1,0 +1,328 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Test chat prompts
+bookmark_border
+On this page
+Test chat prompts
+Stream response from chat model
+What's next
+Vertex AI lets you use Generative AI Studio to test prompts in the Google Cloud console, the Vertex AI API, and the Vertex AI SDK for Python. This page shows you how to test chat prompts by using any of these interfaces.
+Test chat prompts
+To test chat prompts, choose one of the following methods.
+REST
+Vertex AI SDK for Python
+Node.js
+Java
+Console
+To test a text prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your project ID.
+CONTEXT: Optional. Context can be instructions that you give to the model on how it should respond or information that it uses or references to generate a response. Add contextual information in your prompt when you need to give information to the model, or restrict the boundaries of the responses to only what's within the context.
+Optional examples: Examples are a list of structured messages to the model to learn how to respond to the conversation.
+EXAMPLE_INPUT: Example of a message.
+EXAMPLE_OUTPUT: Example of the ideal response.
+Messages: Conversation history provided to the model in a structured alternate-author form. Messages appear in chronological order: oldest first, newest last. When the history of messages causes the input to exceed the maximum length, the oldest messages are removed until the entire prompt is within the allowed limit. There must be an odd number of messages (AUTHOR-CONTENT pairs) for the model to generate a response.
+AUTHOR: The author of the message.
+CONTENT: The content of the message.
+TEMPERATURE: The temperature is used for sampling during response generation, which occurs when topP and topK are applied. Temperature controls the degree of randomness in token selection. Lower temperatures are good for prompts that require a less open-ended or creative response, while higher temperatures can lead to more diverse or creative results. A temperature of 0 means that the highest probability tokens are always selected. In this case, responses for a given prompt are mostly deterministic, but a small amount of variation is still possible.
+For most use cases, try starting with a temperature of 0.2. If the model returns a response that's too generic, too short, or the model gives a fallback response, try increasing the temperature.
+MAX_OUTPUT_TOKENS: Maximum number of tokens that can be generated in the response. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+Specify a lower value for shorter responses and a higher value for longer responses.
+TOP_P: Top-P changes how the model selects tokens for output. Tokens are selected from the most (see top-K) to least probable until the sum of their probabilities equals the top-P value. For example, if tokens A, B, and C have a probability of 0.3, 0.2, and 0.1 and the top-P value is 0.5, then the model will select either A or B as the next token by using temperature and excludes C as a candidate.
+Specify a lower value for less random responses and a higher value for more random responses. The default top-P is 0.95.
+TOP_K: Top-K changes how the model selects tokens for output. A top-K of 1 means the next selected token is the most probable among all tokens in the model's vocabulary (also called greedy decoding), while a top-K of 3 means that the next token is selected from among the three most probable tokens by using temperature.
+For each token selection step, the top-K tokens with the highest probabilities are sampled. Then tokens are further filtered based on top-P with the final token selected using temperature sampling.
+Specify a lower value for less random responses and a higher value for more random responses. The default top-K is 40.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/chat-bison:predict
+Request JSON body:
+{
+  "instances": [{
+      "context":  "
+CONTEXT",
+      "examples": [
+       { 
+          "input": {"content": "
+EXAMPLE_INPUT"},
+          "output": {"content": "
+EXAMPLE_OUTPUT"}
+       }],
+      "messages": [
+       { 
+          "author": "
+AUTHOR",
+          "content": "
+CONTENT",
+       }],
+   }],
+  "parameters": {
+    "temperature": 
+TEMPERATURE,
+    "maxOutputTokens": 
+MAX_OUTPUT_TOKENS,
+    "topP": 
+TOP_P,
+    "topK": 
+TOP_K
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/chat-bison:predict"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following.
+Response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example chat prompt
+MODEL_ID="chat-bison"
+PROJECT_ID=
+PROJECT_ID
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/us-central1/publishers/google/models/${MODEL_ID}:predict -d \
+'{
+  "instances": [{
+      "context":  "My name is Ned. You are my personal assistant. My favorite movies are Lord of the Rings and Hobbit.",
+      "examples": [ {
+          "input": {"content": "Who do you work for?"},
+          "output": {"content": "I work for Ned."}
+       },
+       {
+          "input": {"content": "What do I like?"},
+          "output": {"content": "Ned likes watching movies."}
+       }],
+      "messages": [
+       {
+          "author": "user",
+          "content": "Are my favorite movies based on a book series?",
+       },
+       {
+          "author": "bot",
+          "content": "Yes, your favorite movies, The Lord of the Rings and The Hobbit, are based on book series by J.R.R. Tolkien.",
+       },
+       {
+          "author": "user",
+          "content": "When were these books published?",
+       }],
+   }],
+  "parameters": {
+    "temperature": 0.3,
+    "maxOutputTokens": 200,
+    "topP": 0.8,
+    "topK": 40
+  }
+}'
+To learn more about how to design chat prompts, see Chat prompts.
+Stream response from chat model
+To view sample code requests and responses using the REST API, see Examples using the REST API.
+To view sample code requests and responses using the Vertex AI SDK for Python, see Examples using Vertex AI SDK for Python.
+What's next
+Learn how to tune a foundation model.
+Learn about responsible AI best practices and Vertex AI's safety filters.
+Was this helpful?
+Send feedback

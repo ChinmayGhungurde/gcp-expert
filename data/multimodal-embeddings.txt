@@ -1,0 +1,128 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Multimodal embeddings
+bookmark_border
+On this page
+Use cases
+HTTP request
+Request body
+Sample request
+Response body
+The Embeddings for multimodal (multimodalembedding) model generates 1408-dimension vectors based on the input you provide, which can include a combination of image and text. The embedding vectors can then be used for other subsequent tasks like image classification or content moderation.
+The image embedding vector and text embedding vector are in the same semantic space with the same dimensionality. Therefore, these vectors can be used interchangeably for use cases like searching images by text, or searching text by image.
+Use cases
+Some common use cases for multi-modal embeddings are:
+Image classification: Takes an image as input and predicts one or more classes (labels).
+Image search: Search for relevant or similar images.
+Recommendations: Generate product or ad recommendations based on images.
+To explore this model in the console, see the Embeddings for Multimodal model card in the Model Garden.
+Go to the Model Garden
+HTTP request
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/us-central1/publishers/google/models/multimodalembedding:predict
+Request body
+{
+  "instances": [
+    {
+      "text": string,
+      "image": {
+        // Union field can be only one of the following:
+        "bytesBase64Encoded": string,
+        "gcsUri": string,
+        // End of list of possible types for union field.
+        "mimeType": string
+      }
+    }
+  ]
+}
+Use the following parameters for the multi-modal generation model multimodal embeddings. For more information, see Get multimodal embeddings.
+Parameter Description Acceptable values
+text The input text you want to create an embedding for. String (32 tokens max)
+image The input image you want to create an embedding for. Base64 encoded image (20MiB max)
+Sample request
+REST
+Before using any of the request data, make the following replacements:
+PROJECT_ID: Your Google Cloud project ID.
+TEXT: The target text to get embeddings for. For example, a cat.
+B64_ENCODED_IMG: The target image to get embeddings for. The image must be specified as a base64-encoded byte string.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/multimodalembedding@001:predict
+Request JSON body:
+{
+  "instances": [
+    {
+      "text": "
+TEXT",
+      "image": {
+        "bytesBase64Encoded": "
+B64_ENCODED_IMG"
+      }
+    }
+  ]
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/publishers/google/models/multimodalembedding@001:predict"
+
+
+
+
+
+
+
+
+The embedding the model returns is a 1408 float vector. The following sample response is shortened for space.
+{
+  "predictions": [
+    {
+      "textEmbedding": [
+        0.010477379,
+        -0.00399621,
+        0.00576670747,
+        [...]
+        -0.00823613815,
+        -0.0169572588,
+        -0.00472954148
+      ],
+      "imageEmbedding": [
+        0.00262696808,
+        -0.00198890246,
+        0.0152047109,
+        -0.0103145819,
+        [...]
+        0.0324628279,
+        0.0284924973,
+        0.011650892,
+        -0.00452344026
+      ]
+    }
+  ],
+  "deployedModelId": "DEPLOYED_MODEL_ID"
+}
+Response body
+{
+  "predictions": [
+    {
+      "imageEmbedding": [ integer ]  
+    },
+    {
+      "textEmbedding": [ integer ]
+    }
+  ]
+}
+Response element Description
+imageEmbedding 1408 dimension list of floats.
+textEmbedding 1408 dimension list of floats.
+Was this helpful?
+Send feedback

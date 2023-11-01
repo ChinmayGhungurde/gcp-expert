@@ -1,0 +1,30 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Use cases and tuning methods
+bookmark_border
+On this page
+Tuning types for text models
+Benefits of text model tuning
+What's next
+General availability
+PaLM APIs for text, chat, code, embeddings, and supervised tuning for text-bison are now GA and incur costs when they're used. For more information, see Pricing for Generative AI on Vertex AI and the Generative AI on Vertex AI release notes.
+This page gives you an overview of tuning text generation and text chat models. You learn about the types of tuning available for text models, the benefits of tuning a text model, and scenarios for when you might want to tune a text model.
+Tuning types for text models
+You can choose one of the following methods to tune a text model:
+Supervised tuning - The text generation and text chat models support supervised tuning. Supervised tuning of a text model is a good option when the output of your model isn't complex and is relatively easy to define. Supervised tuning is recommended for classification, sentiment analysis, entity extraction, summarization of content that's not complex, and writing domain-specific queries. For code models, supervised tuning is the only option. To learn how to tune a text model with supervised tuning, see Tune text models with supervised tuning.
+Reinforcement learning from human feedback (RLHF) tuning - The text generation foundation model and some Flan text-to-text transfer transformer (Flan-T5) models support RLHF tuning. RLHF tuning is a good option when the output of your model is complex. RLHF works well on models with sequence-level objectives objectives that aren't easily differentiated with supervised tuning. RLHF tuning is recommended for question answering, summarization of complex content, and content creation, such as a rewrite. To learn how to tune a text model with RLHF tuning, see Tune text models with RLHF tuning.
+Benefits of text model tuning
+Tuned text models are trained on more examples than can fit in a prompt. Because of this, after a pretrained model is tuned, you can provide fewer examples in the prompt than you would with the original pretrained model. Requiring fewer examples results in the following benefits:
+Lower latency in requests.
+Fewer tokens are used.
+Lower latency and fewer tokens results in reducing the cost of inference.
+Important: Model tuning might improve the model's general knowledge. When tuning a model on a task, if you ask the tuned model a question without including a context, the tuned model might not remember which contexts it was tuned on. We recommend including a context for relevant tasks.
+What's next
+Learn how to tune a foundation model using supervised tuning.
+Learn how to tune a foundation model using RLHF tuning.
+Learn how to tune a code model.
+Was this helpful?
+Send feedback

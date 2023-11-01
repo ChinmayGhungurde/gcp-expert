@@ -1,0 +1,191 @@
+Vertex AI
+Documentation
+Generative AI
+Was this helpful?
+Send feedback
+Get batch code predictions
+bookmark_border
+On this page
+Code models that support batch predictions
+Prepare your inputs
+JSONL examples
+BigQuery example
+Request a batch response
+Retrieve batch output
+What's next
+Preview
+This feature is a Preview offering, subject to the Pre-GA Offerings Terms of the GCP Service Specific Terms. Pre-GA products and features may have limited support, and changes to pre-GA products and features may not be compatible with other pre-GA versions. For more information, see the launch stage descriptions. Further, by using the PaLM API on Vertex AI, you agree to the Generative AI Preview terms and conditions (Preview Terms).
+For PaLM APIs on Vertex AI that are not GA, you can process personal data as outlined in the Cloud Data Processing Addendum, subject to applicable restrictions and obligations in the Agreement (as defined in the Preview Terms).
+Getting responses in a batch is a way to efficiently send large numbers of code requests where the latency of the response is not important. Different from getting online responses, where you are limited to one input request at a time, batch predictions send a large number of code generation model requests in a single batch request. Like batch predictions for tabular data in Vertex AI, you determine your output location and add your input, then the responses asynchronously populate to your output location.
+After you submit a batch request and review its results, you can tune the code generation foundation model to improve how well the results work for your particular task. After tuning, you can submit the tuned model for batch generations. To learn more about tuning models, see Tune language foundation models.
+Code models that support batch predictions
+code-bison
+Prepare your inputs
+The input for batch requests is a list of prompts that can be stored in a BigQuery table or as a JSON Lines (JSONL) file in Cloud Storage. Each request can include up to 30,000 prompts.
+JSONL examples
+This section shows examples of how to format input and output JSONL files.
+JSONL input example
+{"prefix":"Write a Python function that determines if a year is a leap year:"}
+{"prefix":"Write a unit test for Python code that reverses a string:"}
+JSONL output example
+{"instance":{"prefix":"Write..."},"predictions": [{"content":"def is_leap_year(year):...","safetyAttributes":{...}}],"status":""}
+{"instance":{"prefix":"Write..."},"predictions": [{"content":"import unittest...", "safetyAttributes":{...}}],"status":""}
+BigQuery example
+This section shows examples of how to format BigQuery input and output.
+BigQuery input example
+This example shows a single column BigQuery table.
+prefix
+"Write a Python function that determines if a year is a leap year:"
+"Write a unit test for Python code that reverses a string:"
+BigQuery output example
+prefix predictions status
+"Write a Python function that determines if a year is a leap year:"
+{
+  "predictions": [
+    {
+      "safetyAttributes": {
+        "scores": [],
+        "blocked": false,
+        "categories": []
+      },
+      "content": "```python\ndef is_leap_year(year):\n  \"\"\"\n  Determine if a year is a leap year.\n\n  Args:\n    year: The year to check.\n\n  Returns:\n    True if the year is a leap year, False otherwise.\n  \"\"\"\n\n  if year % 4 != 0:\n    return False\n\n  if year % 100 == 0 and year % 400 != 0:\n    return False\n\n  return True\n```",
+      "citationMetadata": {
+        "citations": []
+      },
+      "score": -1.5572503805160522
+    }
+  ],
+}
+  "Write a unit test for Python code that reverses a string:"
+{
+  "predictions": [
+    {
+      "safetyAttributes": {
+        "scores": [],
+        "blocked": false,
+        "categories": []
+      },
+      "score": -1.7523338794708252,
+      "citationMetadata": {
+        "citations": []
+      },
+      "content": "```python\nimport unittest\n\nclass TestReverseString(unittest.TestCase):\n\n    def test_reverse_string(self):\n        input_string = \"Hello World\"\n        expected_output = \"dlroW olleH\"\n        output = reverse_string(input_string)\n        self.assertEqual(output, expected_output)\n\nif __name__ == '__main__':\n    unittest.main()\n```"
+    }
+  ],
+}
+Request a batch response
+You can create a code generation batch response by using the Google Cloud console or the Vertex AI SDK for Python. The more input items you submit, the longer the batch generation process takes to complete.
+REST
+Vertex AI SDK for Python
+To test a code prompt by using the Vertex AI API, send a POST request to the publisher model endpoint.
+Before using any of the request data, make the following replacements:
+PROJECT_ID: The name of your Google Cloud project.
+BP_JOB_NAME: The job name.
+MODEL_PARAM: A list of key-value pairs that specify model parameters and their values. For example, you can specify the model's maxOutputTokens and temperature. For more information, see Code generation parameters.
+INPUT_URI: The input source URI. The input source is a BigQuery table or a JSONL file in a Cloud Storage bucket.
+OUTPUT_URI: Output target URI.
+HTTP method and URL:
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs
+Request JSON body:
+{
+    "name": "
+BP_JOB_NAME",
+    "displayName": "
+BP_JOB_NAME",
+    "model": "
+publishers/google/models/text-bison",
+    "model_parameters": "
+MODEL_PARAM"
+    "inputConfig": {
+      "instancesFormat":"bigquery",
+      "bigquerySource":{
+        "inputUri" : "
+INPUT_URI"
+      }
+    },
+    "outputConfig": {
+      "predictionsFormat":"bigquery",
+      "bigqueryDestination":{
+        "outputUri": "
+OUTPUT_URI"
+    }
+  }
+}
+To send your request, choose one of these options:
+curl
+PowerShell
+Note: The following command assumes that you have logged in to the gcloud CLI with your user account by running gcloud init or gcloud auth login, or by using Cloud Shell, which automatically logs you into the gcloud CLI. You can check the currently active account by running gcloud auth list.
+Save the request body in a file named request.json, and execute the following command:
+curl -X POST \
+    -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -d @request.json \
+    "https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs"
+
+
+
+
+
+
+
+
+You should receive a JSON response similar to the following:
+{
+  "name": "projects/{PROJECT_ID}/locations/us-central1/batchPredictionJobs/{BATCH_JOB_ID}",
+  "displayName": "BP_sample_publisher_BQ_20230712_134650",
+  "model": "projects/{PROJECT_ID}/locations/us-central1/models/text-bison",
+  "inputConfig": {
+    "instancesFormat": "bigquery",
+    "bigquerySource": {
+      "inputUri": "bq://sample.text_input"
+    }
+  },
+  "modelParameters": {},
+  "outputConfig": {
+    "predictionsFormat": "bigquery",
+    "bigqueryDestination": {
+      "outputUri": "bq://sample.llm_dataset.embedding_out_BP_sample_publisher_BQ_20230712_134650"
+    }
+  },
+  "state": "JOB_STATE_PENDING",
+  "createTime": "2023-07-12T20:46:52.148717Z",
+  "updateTime": "2023-07-12T20:46:52.148717Z",
+  "labels": {
+    "owner": "sample_owner",
+    "product": "llm"
+  },
+  "modelVersionId": "1",
+  "modelMonitoringStatus": {}
+}
+The response includes a unique identifier for the batch job. You can poll for the status of the batch job using the BATCH_JOB_ID until the job state is JOB_STATE_SUCCEEDED. For example:
+curl \
+  -X GET \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "Content-Type: application/json" \
+https://us-central1-aiplatform.googleapis.com/v1/projects/
+PROJECT_ID/locations/us-central1/batchPredictionJobs/
+BATCH_JOB_ID
+Note: You can run only one batch response job at a time. Custom Service account, live progress, CMEK, and VPCSC reports are not supported at this time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Retrieve batch output
+After a batch prediction task is complete, the output is stored in the Cloud Storage bucket or BigQuery table that you specified in your request.
+What's next
+Learn how to test code prompts.
+See the Code generation reference page.
+Was this helpful?
+Send feedback
