@@ -72,7 +72,7 @@ class ChromaWrapper:
     except Exception as e:
       frame = inspect.currentframe()
       print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
-
+      
   def data_to_collection(self) -> list:
     """ Execute the entire sequence of operations """
     
