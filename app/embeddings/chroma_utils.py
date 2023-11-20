@@ -2,9 +2,33 @@ import chromadb
 import glob
 import re
 import demoji
+from pathos.multiprocessing import ProcessingPool
 import inspect
-from vertexai.language_models import TextEmbeddingModel
-from app.embeddings.settings import CHROMA_COLLECTION_NAME, DATA_PATH
+from langchain.embeddings import VertexAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import Chroma
+from app.embeddings.settings import CHROMA_COLLECTION_NAME, DATA_PATH, CHUNK_SIZE
+
+def get_embeddings(data: list) -> list:
+    """ Return the embeddings for given data list """
+    try:
+      # Divide the data into groups of 20K to satisfy Vertex AI limit
+      text_splitter = CharacterTextSplitter.from_tiktoken_encoder(chunk_size=CHUNK_SIZE, chunk_overlap=20)
+      texts = text_splitter.split_text(data)
+      print("Here")
+      e_model = VertexAIEmbeddings()
+      embeddings = e_model.embed_documents(texts)
+
+      # Combine the split embedding chunks into one
+      all_embed = []
+      for embedding in embeddings:
+        all_embed.extend(embedding)
+
+      return all_embed
+  
+    except Exception as e:
+      frame = inspect.currentframe()
+      print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
 
 class ChromaWrapper:
   def __init__(self):
@@ -34,38 +58,43 @@ class ChromaWrapper:
 
   def __fetch_data(self) -> list:
     """ Fetch the data from data folder and return content in a list"""
-    data_list = []
+    doc_list = []
     try:
       for file in glob.glob(f"{DATA_PATH}/*.txt"):
         with open(file, encoding="utf8") as f:
           content = f.readlines()
           # print(content)
           processed_content = self.__preprocess_text(''.join(content))
-          data_list.append(processed_content)
+          doc_list.append(processed_content)
 
-      return data_list
+      return doc_list
 
     except Exception as e:
       frame = inspect.currentframe()
       print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
-
-  def __get_embeddings(self, data: list) -> list:
-    """ Return the embeddings for given data list """
-    print(len(data))
-    print(len(max(data, key=len)))
-
-    embeddings = []
-
-    # Divide the data into groups of 20K to satisfy Vertex AI limit
-
-    # model = TextEmbeddingModel.from_pretrained('textembedding-gecko@001')
-    # embeddings = model.get_embeddings(data)
-    # print(type(embeddings))
-
+      
   def data_to_collection(self) -> list:
     """ Execute the entire sequence of operations """
-    data = self.__fetch_data()
-    self.__get_embeddings(data)
+    
+    try:
+      pool = ProcessingPool()
+
+      # TODO Fetch and serialize the metadata
+
+      # Get the embeddings for each document
+      doc_list = self.__fetch_data()
+      embeddings = pool.map(get_embeddings, doc_list)
+
+      # Store embeddings in ChromaDB instance
+      # self.collection.add(
+      #   embeddings=embeddings,
+      #   documents=doc_list,
+      #   # metadata=metadata
+      # )
+
+    except Exception as e:
+      frame = inspect.currentframe()
+      print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
   
   
 

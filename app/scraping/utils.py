@@ -1,19 +1,26 @@
 from selenium import webdriver 
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By 
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 from pathlib import Path
 from urllib.parse import urlparse
+import json
+import inspect
 
-from app.scraping.settings import WHITELIST_URLS
+from app.scraping.settings import WHITELIST_URLS, METADATA_FILENAME
 
 class Crawler:
     def __init__(self, urls=[]):
         self.urls = urls
         self.visited_urls = []
+
+        # Configure the driver
+        options = Options()
+        options.add_argument("--headless")
         self.driver = webdriver.Chrome(service=ChromeService( 
-	ChromeDriverManager().install())) 
+	ChromeDriverManager().install()), options=options) 
 
     # Reset the current URLs queue, visited array and restart the driver
     def reset(self, urls):
@@ -37,7 +44,8 @@ class Crawler:
             else:
                 return self.driver.find_elements(By.TAG_NAME, tag)
         except Exception as e:
-            print(e)
+            frame = inspect.currentframe()
+            print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
 
     def get_elements_by_class(self, class_name, parent=None):
         try:
@@ -46,7 +54,8 @@ class Crawler:
             else:
                 return self.driver.find_elements(By.CLASS_NAME, class_name)
         except Exception as e:
-            print(e)
+            frame = inspect.currentframe()
+            print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
 
     def get_elements_by_selector(self, selector, parent=None):
         try:
@@ -55,7 +64,8 @@ class Crawler:
             else:
                 return self.driver.find_elements(By.CSS_SELECTOR, selector)
         except Exception as e:
-            print(e)
+            frame = inspect.currentframe()
+            print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
 
     def get_all_links(self, parent):
         links = []
@@ -88,7 +98,8 @@ class Crawler:
                             links.append(link)   
             return links
         except Exception as e:
-            print(e)
+            frame = inspect.currentframe()
+            print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
 
     def recursive_crawl_by_selector(self, selector, dirpath):
         try:
@@ -115,10 +126,28 @@ class Crawler:
 
             print(f"Wrote {filename}")
 
+            # Write the metadata
+            try:
+                with open(f"{dirpath}/{METADATA_FILENAME}.json", "r") as f:
+                    data = json.load(f)
+            except (json.JSONDecodeError, FileNotFoundError):
+                data = []
+
+            md_obj = {
+                'path': filename,
+                'url': url
+            }
+            data.append(md_obj)
+
+            with open(f"{dirpath}/{METADATA_FILENAME}.json", 'w') as f:
+                json.dump(data, f, indent=2)
+
+
             # Perform Depth-first Search on the remaining URL tree to scan the rest of the docs
             while(len(self.urls) != 0): 
                 self.recursive_crawl_by_selector(selector, dirpath)
 
         except Exception as e:
-            print(e)
+            frame = inspect.currentframe()
+            print(f"Error in {inspect.getframeinfo(frame).function}: {e}")
     
